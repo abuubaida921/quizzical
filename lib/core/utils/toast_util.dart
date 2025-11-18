@@ -1,3 +1,4 @@
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cherry_toast/cherry_toast.dart';
@@ -17,6 +18,7 @@ class ToastUtil {
     _showWithCherry(
       context,
       () => CherryToast.success(
+        animationType: AnimationType.fromTop,
         title: Text(title ?? 'Success'),
         description: Text(message),
         toastDuration: duration ?? _defaultDuration,
@@ -36,6 +38,7 @@ class ToastUtil {
     _showWithCherry(
       context,
       () => CherryToast.error(
+        animationType: AnimationType.fromTop,
         title: Text(title ?? 'Error'),
         description: Text(message),
         toastDuration: duration ?? _defaultDuration,
@@ -55,6 +58,7 @@ class ToastUtil {
     _showWithCherry(
       context,
       () => CherryToast.info(
+        animationType: AnimationType.fromTop,
         title: Text(title ?? 'Info'),
         description: Text(message),
         toastDuration: duration ?? _defaultDuration,
@@ -74,6 +78,7 @@ class ToastUtil {
     _showWithCherry(
       context,
       () => CherryToast.warning(
+        animationType: AnimationType.fromTop,
         title: Text(title ?? 'Warning'),
         description: Text(message),
         toastDuration: duration ?? _defaultDuration,

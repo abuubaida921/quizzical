@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
+import '../../../../core/utils/toast_util.dart';
 import '../controllers/quiz_controller.dart';
 
 class QuizConfigPage extends StatefulWidget {
@@ -131,15 +132,18 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
         message = 'Failed to load questions. ${e.toString()}';
       }
 
-      // Try to show a GetX snackbar — if that fails (no overlay), fall back to a regular AlertDialog
-      // Prefer using ScaffoldMessenger (less dependent on Get overlay). If that fails, show an AlertDialog.
+      // Use the centralized ToastUtil (CherryToast) to show messages consistently.
+      // Use info toast for 'No Questions', otherwise show an error toast.
       if (mounted) {
         try {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message), duration: const Duration(seconds: 4)),
-          );
+          final isNoQuestions = title.toLowerCase().contains('no question');
+          if (isNoQuestions) {
+            ToastUtil.info(context, message, title: title);
+          } else {
+            ToastUtil.error(context, message, title: title);
+          }
         } catch (_) {
-          // fallback to native dialog if SnackBar cannot be shown
+          // fallback to native dialog if toast cannot be shown
           showDialog<void>(
             context: context,
             builder: (ctx) => AlertDialog(
