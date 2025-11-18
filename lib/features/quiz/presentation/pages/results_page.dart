@@ -71,7 +71,7 @@ class _ResultsPageState extends State<ResultsPage> with SingleTickerProviderStat
 
               // Top illustration (confetti / party popper)
               Expanded(
-                flex: 5,
+                flex: 3,
                 child: Center(
                   child: ScaleTransition(
                     scale: _confettiAnim,
@@ -165,7 +165,7 @@ class _ResultsPageState extends State<ResultsPage> with SingleTickerProviderStat
   Widget _buildTopIllustration(BuildContext context) {
     // Try to render a party illustration from assets; fallback to a stylized placeholder.
     return LayoutBuilder(builder: (context, constraints) {
-      final maxHeight = constraints.maxHeight * 0.95;
+      final maxHeight = constraints.maxHeight * 0.75;
       final assetPath = Assets.assetImages.emptyState; // replace with a party/celebration asset if available
 
       return Image.asset(
