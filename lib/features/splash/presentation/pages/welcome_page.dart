@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
 
@@ -43,7 +44,7 @@ class WelcomePage extends StatelessWidget {
                   height: 58,
                   child: ElevatedButton(
                     onPressed: () {
-                      Get.toNamed('/categories');
+                      Get.offAllNamed(AppPages.categories);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryButtonColor,
