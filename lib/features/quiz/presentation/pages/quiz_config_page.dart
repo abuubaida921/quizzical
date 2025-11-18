@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/routes/app_pages.dart';
@@ -23,6 +24,11 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   late final int categoryId;
   late final String categoryName;
 
+  // Track whether we've shown the loading dialog so we only try to dismiss it when appropriate
+  bool _loadingDialogShown = false;
+  // Store the BuildContext of the modal's builder so we can safely dismiss it
+  BuildContext? _loadingDialogContext;
+
   @override
   void initState() {
     super.initState();
@@ -33,11 +39,19 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
   Future<void> _onStartPressed() async {
     try {
-      // show loading dialog while fetching
-      Get.dialog(
-        Center(child: CircularProgressIndicator()),
-        barrierDismissible: false,
-      );
+      // show loading dialog while fetching (use native showDialog so dismissal is tied to Navigator)
+      if (mounted) {
+        _loadingDialogShown = true;
+        showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (ctx) {
+            // capture the dialog's context so we can pop it reliably later
+            _loadingDialogContext = ctx;
+            return const Center(child: CircularProgressIndicator());
+          },
+        );
+      }
 
       await _quizController.loadQuiz(
         amount: _numQuestions,
@@ -47,17 +61,105 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
       );
 
       // remove loading
-      if (Get.isDialogOpen == true) Get.back();
+      if (_loadingDialogShown) {
+        try {
+          if (_loadingDialogContext != null) {
+            Navigator.of(_loadingDialogContext!).pop();
+          } else if (mounted && Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+        } catch (_) {
+          // ignore any error while dismissing dialog
+        }
+        _loadingDialogContext = null;
+        _loadingDialogShown = false;
+      }
 
       // navigate to play page
       Get.offNamed(AppPages.quizPlayPage);
     } catch (e) {
-      if (Get.isDialogOpen == true) Get.back();
-      Get.snackbar(
-        'Error',
-        'Failed to load questions. Please try again.',
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // remove loading if still visible
+      if (_loadingDialogShown) {
+        try {
+          if (_loadingDialogContext != null) {
+            Navigator.of(_loadingDialogContext!).pop();
+          } else if (mounted && Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+        } catch (_) {
+          // ignore
+        }
+        _loadingDialogShown = false;
+      }
+
+      // Normalize the error text for pattern matching
+      final errText = e.toString().toLowerCase();
+
+      String title = 'Error';
+      String message = 'Failed to load questions. Please try again.';
+
+      // Handle Trivia API response codes specifically (OpenTDB uses response_code)
+      if (errText.contains('trivia api response_code')) {
+        final m = RegExp(r'trivia api response_code[:\s]+(\d+)').firstMatch(errText);
+        final code = m != null ? int.tryParse(m.group(1) ?? '') ?? -1 : -1;
+        switch (code) {
+          case 1:
+            title = 'No Questions';
+            message = 'The trivia service returned no results for your selection. Try adjusting the category, difficulty, or reduce the number of questions.';
+            break;
+          case 2:
+            title = 'Invalid Request';
+            message = 'One or more selected options are invalid. Please check your selections and try again.';
+            break;
+          case 3:
+          case 4:
+            title = 'Session Error';
+            message = 'There was a session/token issue with the trivia service. Please try again later.';
+            break;
+          default:
+            title = 'Trivia Service';
+            message = 'Trivia service returned an error (code $code). Please try again.';
+        }
+      } else if (errText.contains('no questions returned') || errText.contains('empty response') || errText.contains('no question')) {
+        title = 'No Questions';
+        message = 'No questions are available for the selected category or filters. Try changing the number, difficulty, or question type.';
+      } else if (errText.contains('formatexception') || errText.contains('unexpected payload') || errText.contains('unexpected results') || errText.contains('unsupported question')) {
+        title = 'Data Error';
+        message = 'Received unexpected data from the server. Please try again later.';
+      } else {
+        // For other errors show a concise message but include the error string so it's helpful
+        message = 'Failed to load questions. ${e.toString()}';
+      }
+
+      // Try to show a GetX snackbar — if that fails (no overlay), fall back to a regular AlertDialog
+      // Prefer using ScaffoldMessenger (less dependent on Get overlay). If that fails, show an AlertDialog.
+      if (mounted) {
+        try {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message), duration: const Duration(seconds: 4)),
+          );
+        } catch (_) {
+          // fallback to native dialog if SnackBar cannot be shown
+          showDialog<void>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+              title: Text(title),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(ctx).pop(),
+                  child: const Text('OK'),
+                )
+              ],
+            ),
+          );
+        }
+      } else {
+        // if we're not mounted, log the message so it's not lost
+        if (kDebugMode) {
+          print('UI not mounted to show error: $title - $message');
+        }
+      }
     }
   }
 
@@ -126,7 +228,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                                   inactiveTrackColor: Colors.grey.shade300,
                                   trackHeight: 6,
                                   thumbColor: const Color(0xFF1E9AE6),
-                                  overlayColor: const Color(0xFF1E9AE6).withOpacity(0.12),
+                                  overlayColor: Color.fromRGBO(30, 154, 230, 0.12),
                                   thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
                                 ),
                                 child: Slider(
