@@ -13,6 +13,13 @@ class App extends StatelessWidget {
       title: 'Quizzical',
       debugShowCheckedModeBanner: false,
 
+      // Initial dependency bindings
+      initialBinding: AppBindings(),
+
+      // Routing
+      initialRoute: AppPages.splash,
+      getPages: AppPages.routes,
+
       // Theme design
       theme: ThemeData(
         primarySwatch: Colors.indigo,
