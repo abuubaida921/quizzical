@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../core/constants/assets.dart';
+
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
-  static const _illustrationPath = 'assets/images/welcome_illustration.png';
   static const _primaryButtonColor = Color(0xFF0F7B71);
 
   @override
@@ -18,25 +19,19 @@ class WelcomePage extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              const SizedBox(height: 28),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxHeight: constraints.maxHeight * 0.45,
-                        maxWidth: constraints.maxWidth * 0.85,
-                      ),
-                      child: _buildIllustration(context),
-                    ),
-                    const SizedBox(height: 22),
-                    Text(
-                      'Quizzical',
-                    ),
-                  ],
+              const SizedBox(height: 40),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: constraints.maxHeight * 0.45,
+                  maxWidth: constraints.maxWidth * 0.85,
                 ),
+                child: _buildIllustration(context),
               ),
+              const SizedBox(height: 22),
+              Text(
+                'Quizzical',
+              ),
+              Spacer(),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 22),
                 child: SizedBox(
@@ -76,7 +71,7 @@ class WelcomePage extends StatelessWidget {
   Widget _buildIllustration(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Image.asset(
-        _illustrationPath,
+        Assets.images.welcomeIllustration,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           return Center(
