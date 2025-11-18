@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/routes/app_pages.dart';
 
 import '../controllers/quiz_controller.dart';
+import '../widgets/exit_quiz_dialogue.dart';
 
 class QuizPlayPage extends StatelessWidget {
   const QuizPlayPage({super.key});
@@ -27,24 +29,16 @@ class QuizPlayPage extends StatelessWidget {
                   )),
                   const Spacer(),
                   InkWell(
-                    onTap: () {
-                      // confirm exit
-                      Get.dialog<bool>(
-                        AlertDialog(
-                          title: const Text('Exit quiz?'),
-                          content: const Text('Are you sure you want to quit the current quiz? Your progress will be lost.'),
-                          actions: [
-                            TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
-                            TextButton(
-                              onPressed: () {
-                                // navigate back to categories (or home)
-                                Get.offAllNamed('/categories');
-                              },
-                              child: const Text('Exit'),
-                            ),
-                          ],
-                        ),
+                    onTap: () async {
+                      // Show the dialog and handle result
+                      final shouldExit = await Get.dialog<bool>(
+                        const ExitQuizDialog(),
+                        barrierDismissible: false,
                       );
+
+                      if (shouldExit == true) {
+                        Get.offAllNamed(AppPages.categories);
+                      }
                     },
                     customBorder: const CircleBorder(),
                     child: Padding(
