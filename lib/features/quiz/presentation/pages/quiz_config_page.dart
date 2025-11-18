@@ -29,6 +29,8 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   bool _loadingDialogShown = false;
   // Store the BuildContext of the modal's builder so we can safely dismiss it
   BuildContext? _loadingDialogContext;
+  // Track loading state to disable button during API call
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -39,6 +41,13 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   }
 
   Future<void> _onStartPressed() async {
+    // Prevent multiple simultaneous calls
+    if (_isLoading) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
     try {
       // show loading dialog while fetching (use native showDialog so dismissal is tied to Navigator)
       if (mounted) {
@@ -95,6 +104,8 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
       // Normalize the error text for pattern matching
       final errText = e.toString().toLowerCase();
+      print('=====================================================================');
+      print(errText);
 
       String title = 'Error';
       String message = 'Failed to load questions. Please try again.';
@@ -121,7 +132,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
             title = 'Trivia Service';
             message = 'Trivia service returned an error (code $code). Please try again.';
         }
-      } else if (errText.contains('no questions returned') || errText.contains('empty response') || errText.contains('no question')) {
+      } else if (errText.contains('no questions returned') || errText.contains('empty response') || errText.contains('no question')|| errText.contains('instance of \'apiexception\'')) {
         title = 'No Questions';
         message = 'No questions are available for the selected category or filters. Try changing the number, difficulty, or question type.';
       } else if (errText.contains('formatexception') || errText.contains('unexpected payload') || errText.contains('unexpected results') || errText.contains('unsupported question')) {
@@ -129,7 +140,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
         message = 'Received unexpected data from the server. Please try again later.';
       } else {
         // For other errors show a concise message but include the error string so it's helpful
-        message = 'Failed to load questions. ${e.toString()}';
+        message = 'Failed to load questions. Try again.';
       }
 
       // Use the centralized ToastUtil (CherryToast) to show messages consistently.
@@ -163,6 +174,13 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
         if (kDebugMode) {
           print('UI not mounted to show error: $title - $message');
         }
+      }
+    } finally {
+      // Always re-enable the button when the call completes
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }
   }
@@ -329,16 +347,19 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                 width: double.infinity,
                 height: 68,
                 child: OutlinedButton(
-                  onPressed: _onStartPressed,
+                  onPressed: _isLoading ? null : _onStartPressed,
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF0E5E59), width: 2),
+                    side: BorderSide(
+                      color: _isLoading ? Colors.grey.shade400 : const Color(0xFF0E5E59),
+                      width: 2,
+                    ),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                     backgroundColor: Colors.white,
                   ),
                   child: Text(
                     'START',
                     style: theme.textTheme.labelLarge?.copyWith(
-                      color: const Color(0xFF0E5E59),
+                      color: _isLoading ? Colors.grey.shade400 : const Color(0xFF0E5E59),
                       fontSize: 20,
                       fontWeight: FontWeight.w800,
                       letterSpacing: 1.4,
