@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
 import '../controllers/quiz_controller.dart';
@@ -49,7 +50,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
       if (Get.isDialogOpen == true) Get.back();
 
       // navigate to play page
-      Get.offNamed('/play');
+      Get.offNamed(AppPages.quizPlayPage);
     } catch (e) {
       if (Get.isDialogOpen == true) Get.back();
       Get.snackbar(

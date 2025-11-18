@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:quizzical/features/categories/presentation/pages/category_page.dart';
 import '../features/quiz/presentation/pages/quiz_config_page.dart';
+import '../features/quiz/presentation/pages/quiz_play_page.dart';
 import '../features/splash/presentation/pages/splash_page.dart';
 import '../features/splash/presentation/pages/welcome_page.dart';
 
@@ -9,11 +10,13 @@ class AppPages {
   static const welcome = '/welcome';
   static const categories = '/categories';
   static const quizConfigPage = '/quiz-config';
+  static const quizPlayPage = '/quiz-play';
 
   static final routes = [
     GetPage(name: AppPages.splash, page: () => const SplashPage()),
     GetPage(name: AppPages.welcome, page: () => const WelcomePage()),
     GetPage(name: AppPages.categories, page: () => const CategoryPage()),
     GetPage(name: AppPages.quizConfigPage, page: () => const QuizConfigPage()),
+    GetPage(name: AppPages.quizPlayPage, page: () => const QuizPlayPage()),
   ];
 }
