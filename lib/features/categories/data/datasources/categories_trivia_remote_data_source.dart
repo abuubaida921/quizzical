@@ -2,9 +2,9 @@ import 'package:flutter/foundation.dart';
 import '../../../../core/network/api_client.dart';
 import '../models/category_model.dart';
 
-class TriviaRemoteDataSource {
+class CategoriesTriviaRemoteDataSource {
   final ApiClient client;
-  TriviaRemoteDataSource(this.client);
+  CategoriesTriviaRemoteDataSource(this.client);
 
   /// Fetch categories from OpenTDB.
   /// Returns a List<CategoryModel>. Throws ApiException or FormatException if error occur..

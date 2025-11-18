@@ -1,11 +1,10 @@
 import 'dart:math';
-
 import 'package:get/get.dart';
-
-import '../../../categories/data/datasources/trivia_remote_datasource.dart';
+import 'package:quizzical/features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
+import 'package:quizzical/features/quiz/data/models/quiz_model.dart';
 
 class QuizController extends GetxController {
-  final TriviaRemoteDataSource remote;
+  final QuizTriviaRemoteDataSource remote;
 
   QuizController(this.remote);
 
@@ -20,6 +19,9 @@ class QuizController extends GetxController {
   final showAnswerFeedback = false.obs;
   final error = RxnString();
 
+  // Cache of shuffled options per question index to keep order stable while viewing
+  final Map<int, List<String>> _shuffledCache = {};
+
   // Derived getters
   int get totalQuestions => questions.length;
   QuestionModel? get currentQuestion =>
@@ -29,11 +31,17 @@ class QuizController extends GetxController {
   int get currentNumber => totalQuestions == 0 ? 0 : currentIndex.value + 1;
   String get progressText => '$currentNumber / $totalQuestions';
 
-  /// Load quiz questions from remote source based on configuration.
-  /// - amount: number of questions (1-50)
-  /// - categoryId: category id (0 or omitted means any)
-  /// - difficulty: 'any' | 'easy' | 'medium' | 'hard' (case-insensitive)
-  /// - type: 'any' | 'multiple' | 'boolean'
+  @override
+  void onInit() {
+    super.onInit();
+
+    // Whenever index changes, clear selected answer and hide feedback
+    ever(currentIndex, (_) {
+      selectedAnswer.value = null;
+      showAnswerFeedback.value = false;
+    });
+  }
+
   Future<void> loadQuiz({
     required int amount,
     required int categoryId,
@@ -42,80 +50,107 @@ class QuizController extends GetxController {
   }) async {
     isLoading.value = true;
     error.value = null;
+    _shuffledCache.clear();
+
     try {
-      // Fetch questions from remote datasource
-      final items = await remote.fetchQuestions(
+      final raw = await remote.fetchQuestions(
         amount: amount,
         categoryId: categoryId,
         difficulty: difficulty,
         type: type,
       );
 
-      questions.assignAll(items);
+      final List<QuestionModel> parsed = _parseRawQuestions(raw);
+
+      if (parsed.isEmpty) {
+        throw Exception('No questions returned from API');
+      }
+
+      questions.assignAll(parsed);
+
       // reset progress
       currentIndex.value = 0;
       score.value = 0;
       selectedAnswer.value = null;
       showAnswerFeedback.value = false;
-    } catch (e) {
+    } catch (e, st) {
+      if (Get.isLogEnable) {
+        print('QuizController.loadQuiz error: $e\n$st');
+      }
       error.value = e.toString();
-      // rethrow if caller wants to handle
       rethrow;
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// Returns a shuffled list of answers for the current question.
-  /// Handles both "multiple" and "boolean" types.
-  List<String> shuffledAnswersForCurrent({int? seed}) {
-    final q = currentQuestion;
-    if (q == null) return <String>[];
-
-    if (q.type.toLowerCase() == 'boolean') {
-      // For boolean questions prefer canonical order [True, False] then shuffle slightly
-      final options = <String>[q.correctAnswer, ...q.incorrectAnswers];
-      // ensure uniqueness and consistent capitalisation
-      final dedup = options.map((s) => s.trim()).toSet().toList();
-      // Shuffle using optional seed for testability
-      if (seed != null) {
-        final rand = Random(seed);
-        dedup.shuffle(rand);
-      } else {
-        dedup.shuffle(Random());
-      }
-      return dedup;
-    } else {
-      final options = <String>[q.correctAnswer, ...q.incorrectAnswers].map((s) => s.trim()).toList();
-      if (seed != null) {
-        final rand = Random(seed);
-        options.shuffle(rand);
-      } else {
-        options.shuffle(Random());
-      }
-      return options;
+  List<QuestionModel> _parseRawQuestions(dynamic raw) {
+    if (raw == null) {
+      throw Exception('Empty response from questions endpoint');
     }
+
+    if (raw is List<QuestionModel>) {
+      return raw;
+    }
+
+    if (raw is Map<String, dynamic> && raw.containsKey('results')) {
+      final results = raw['results'];
+      if (results is List) {
+        return results.map<QuestionModel>((item) {
+          if (item is QuestionModel) return item;
+          if (item is Map<String, dynamic>) return QuestionModel.fromJson(item);
+          return QuestionModel.fromJson(Map<String, dynamic>.from(item as Map));
+        }).toList();
+      }
+      throw FormatException('Unexpected results format in payload');
+    }
+
+    if (raw is List) {
+      return raw.map<QuestionModel>((item) {
+        if (item is QuestionModel) return item;
+        if (item is Map<String, dynamic>) return QuestionModel.fromJson(item);
+        if (item is Map) return QuestionModel.fromJson(Map<String, dynamic>.from(item));
+        throw FormatException('Unsupported question item type: ${item.runtimeType}');
+      }).toList();
+    }
+
+    throw FormatException('Unexpected payload from remote.fetchQuestions: ${raw.runtimeType}');
   }
 
-  /// Submit an answer for the current question.
-  /// - Marks feedback visible and updates score if correct.
-  /// - Subsequent calls while feedback shown will be ignored.
+  List<String> shuffledAnswersForIndex(int index, {int? seed}) {
+    if (index < 0 || index >= questions.length) return <String>[];
+    if (_shuffledCache.containsKey(index)) return _shuffledCache[index]!;
+    final q = questions[index];
+    final combined = <String>[q.correctAnswer, ...q.incorrectAnswers].map((s) => s.trim()).toList();
+
+    if (seed != null) {
+      final rand = Random(seed);
+      combined.shuffle(rand);
+    } else {
+      combined.shuffle(Random());
+    }
+
+    _shuffledCache[index] = combined;
+    return combined;
+  }
+
+  List<String> shuffledAnswersForCurrent({int? seed}) {
+    return shuffledAnswersForIndex(currentIndex.value, seed: seed);
+  }
+
   void submitAnswer(String answer) {
-    if (showAnswerFeedback.value) return; // avoid double submissions
+    if (showAnswerFeedback.value) return;
     selectedAnswer.value = answer;
     showAnswerFeedback.value = true;
 
     final q = currentQuestion;
     if (q == null) return;
 
-    if (answer.trim() == q.correctAnswer.trim()) {
+    if (_normalize(answer) == _normalize(q.correctAnswer)) {
       score.value++;
     }
-    // Keep result visible until nextQuestion() is called by the UI.
   }
 
-  /// Move to the next question or navigate to results if finished.
-  /// - Resets selection/feedback for the next question.
   void nextQuestion() {
     showAnswerFeedback.value = false;
     selectedAnswer.value = null;
@@ -123,13 +158,13 @@ class QuizController extends GetxController {
     if (currentIndex.value < totalQuestions - 1) {
       currentIndex.value++;
     } else {
-      // finished -> navigate to results screen (replace stack so user cannot go back to quiz)
-      // Make sure route '/results' exists in AppPages
-      Get.offAllNamed('/results');
+      Get.offAllNamed('/results', arguments: {
+        'score': score.value,
+        'total': totalQuestions,
+      });
     }
   }
 
-  /// Reset the quiz state (keeps questions list intact if you want to replay same quiz)
   void resetProgress({bool clearQuestions = false}) {
     if (clearQuestions) questions.clear();
     currentIndex.value = 0;
@@ -137,20 +172,46 @@ class QuizController extends GetxController {
     selectedAnswer.value = null;
     showAnswerFeedback.value = false;
     error.value = null;
+    _shuffledCache.clear();
   }
 
-  /// Convenience: returns whether provided answer is correct (without changing state)
   bool isCorrectAnswer(String answer, {int? questionIndex}) {
     final q = (questionIndex != null && questionIndex >= 0 && questionIndex < questions.length)
         ? questions[questionIndex]
         : currentQuestion;
     if (q == null) return false;
-    return answer.trim() == q.correctAnswer.trim();
+    return _normalize(answer) == _normalize(q.correctAnswer);
+  }
+
+  String _decodeHtml(String input) {
+    if (input.isEmpty) return input;
+
+    var out = input.replaceAll('&quot;', '"').replaceAll('&ldquo;', '“').replaceAll('&rdquo;', '”');
+    out = out.replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>');
+    out = out.replaceAll('&apos;', "'").replaceAll('&#039;', "'");
+
+    out = out.replaceAllMapped(RegExp(r'&#(\d+);'), (m) {
+      final code = int.tryParse(m[1] ?? '');
+      if (code == null) return m[0] ?? '';
+      return String.fromCharCode(code);
+    });
+
+    out = out.replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (m) {
+      final code = int.tryParse(m[1] ?? '', radix: 16);
+      if (code == null) return m[0] ?? '';
+      return String.fromCharCode(code);
+    });
+
+    return out;
+  }
+
+  String _normalize(String s) {
+    return s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
   }
 
   @override
   void onClose() {
-    // Clean up if needed
+    _shuffledCache.clear();
     super.onClose();
   }
 }

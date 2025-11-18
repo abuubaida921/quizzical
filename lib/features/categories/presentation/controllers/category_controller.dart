@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:quizzical/routes/app_pages.dart';
-import '../../data/datasources/trivia_remote_datasource.dart';
+import '../../data/datasources/categories_trivia_remote_data_source.dart';
 import '../../data/models/category_model.dart';
 
 class CategoryController extends GetxController {
-  final TriviaRemoteDataSource remote;
+  final CategoriesTriviaRemoteDataSource remote;
   CategoryController(this.remote);
 
   final isLoading = false.obs;
