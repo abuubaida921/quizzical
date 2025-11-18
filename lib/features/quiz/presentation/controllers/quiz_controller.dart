@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
 import 'package:quizzical/features/quiz/data/models/quiz_model.dart';
+import 'package:quizzical/routes/app_pages.dart';
 
 class QuizController extends GetxController {
   final QuizTriviaRemoteDataSource remote;
@@ -161,7 +162,7 @@ class QuizController extends GetxController {
     if (currentIndex.value < totalQuestions - 1) {
       currentIndex.value++;
     } else {
-      Get.offAllNamed('/results', arguments: {
+      Get.offAllNamed(AppPages.resultsPage, arguments: {
         'score': score.value,
         'total': totalQuestions,
       });

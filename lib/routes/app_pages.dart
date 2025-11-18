@@ -15,6 +15,7 @@ class AppPages {
   static const categories = '/categories';
   static const quizConfigPage = '/quiz-config';
   static const quizPlayPage = '/quiz-play';
+  static const resultsPage = '/results';
 
   static final routes = [
     GetPage(name: AppPages.splash, page: () => const SplashPage()),
