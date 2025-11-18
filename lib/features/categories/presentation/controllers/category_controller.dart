@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:quizzical/routes/app_pages.dart';
 import '../../data/datasources/trivia_remote_datasource.dart';
 import '../../data/models/category_model.dart';
 
@@ -32,7 +33,7 @@ class CategoryController extends GetxController {
   /// Called when the user taps a category card.
   /// Navigates to the quiz configuration page and passes category id & name as arguments.
   void selectCategory(CategoryModel category) {
-    Get.toNamed('/config', arguments: {
+    Get.toNamed(AppPages.quizConfigPage, arguments: {
       'categoryId': category.id,
       'categoryName': category.name,
     });
