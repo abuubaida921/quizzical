@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../../../core/constants/assets.dart';
 
@@ -10,7 +11,6 @@ class WelcomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -19,7 +19,7 @@ class WelcomePage extends StatelessWidget {
           return Column(
             mainAxisSize: MainAxisSize.max,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 50),
               ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: constraints.maxHeight * 0.45,
@@ -30,6 +30,10 @@ class WelcomePage extends StatelessWidget {
               const SizedBox(height: 22),
               Text(
                 'Quizzical',
+                style: GoogleFonts.aoboshiOne(
+                  fontSize: 48,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
               Spacer(),
               Padding(
@@ -44,18 +48,17 @@ class WelcomePage extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: _primaryButtonColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       elevation: 6,
                       shadowColor: Colors.black.withOpacity(0.18),
                     ),
                     child: Text(
                       'GET STARTED',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.2,
-                        fontSize: 16,
+                      style: GoogleFonts.baloo2(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
                       ),
                     ),
                   ),
@@ -71,7 +74,7 @@ class WelcomePage extends StatelessWidget {
   Widget _buildIllustration(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       return Image.asset(
-        Assets.images.welcomeIllustration,
+        Assets.assetImages.welcomeIllustration,
         fit: BoxFit.contain,
         errorBuilder: (context, error, stackTrace) {
           return Center(

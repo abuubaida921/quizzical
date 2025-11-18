@@ -5,13 +5,13 @@ class Assets {
   static const _iconsDir = 'assets/icons';
   static const _lottieDir = 'assets/lottie';
 
-  static _Images get images => const _Images();
-  static _Icons get icons => const _Icons();
-  static _Lottie get lottie => const _Lottie();
+  static AssetImages get assetImages => const AssetImages();
+  static AssetIcons get assetIcons => const AssetIcons();
+  static AssetLottie get assetLottie => const AssetLottie();
 }
 
-class _Images {
-  const _Images();
+class AssetImages {
+  const AssetImages();
 
   // Welcome / onboarding
   final String welcomeIllustration = '${Assets._imagesDir}/ic_welcome_illustration.png';
@@ -26,8 +26,8 @@ class _Images {
   final String emptyState = '${Assets._imagesDir}/empty_state.png';
 }
 
-class _Icons {
-  const _Icons();
+class AssetIcons {
+  const AssetIcons();
 
   // PNG/SVG icon files (use SvgPicture.asset for svg)
   final String back = '${Assets._iconsDir}/ic_back.png';
@@ -40,8 +40,8 @@ class _Icons {
   final String incorrect = '${Assets._iconsDir}/ic_incorrect.svg';
 }
 
-class _Lottie {
-  const _Lottie();
+class AssetLottie {
+  const AssetLottie();
 
   final String confetti = '${Assets._lottieDir}/confetti.json';
   final String loading = '${Assets._lottieDir}/loading.json';
