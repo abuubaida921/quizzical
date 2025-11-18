@@ -6,8 +6,6 @@ class CategoriesTriviaRemoteDataSource {
   final ApiClient client;
   CategoriesTriviaRemoteDataSource(this.client);
 
-  /// Fetch categories from OpenTDB.
-  /// Returns a List<CategoryModel>. Throws ApiException or FormatException if error occur..
   Future<List<CategoryModel>> fetchCategories() async {
     final res = await client.get('/api_category.php');
 

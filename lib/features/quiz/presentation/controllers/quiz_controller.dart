@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
 import 'package:quizzical/features/quiz/data/models/quiz_model.dart';
@@ -75,7 +76,9 @@ class QuizController extends GetxController {
       showAnswerFeedback.value = false;
     } catch (e, st) {
       if (Get.isLogEnable) {
-        print('QuizController.loadQuiz error: $e\n$st');
+        if (kDebugMode) {
+          print('QuizController.loadQuiz error: $e\n$st');
+        }
       }
       error.value = e.toString();
       rethrow;
