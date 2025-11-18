@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:quizzical/features/categories/presentation/pages/category_page.dart';
+import 'package:quizzical/features/quiz/presentation/pages/results_page.dart';
 import '../features/categories/data/datasources/categories_trivia_remote_data_source.dart';
 import '../features/categories/presentation/controllers/category_controller.dart';
 import '../features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
@@ -49,5 +50,15 @@ class AppPages {
       }),
     ),
     GetPage(name: AppPages.quizPlayPage, page: () => const QuizPlayPage()),
+    GetPage(name: AppPages.resultsPage, page: () => const ResultsPage(),binding: BindingsBuilder((){
+      Get.lazyPut<QuizTriviaRemoteDataSource>(
+            () => QuizTriviaRemoteDataSource(Get.find()),
+        fenix: true,
+      );
+      Get.lazyPut<QuizController>(
+            () => QuizController(Get.find()),
+        fenix: true,
+      );
+    })),
   ];
 }
