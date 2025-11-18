@@ -22,6 +22,7 @@ class AssetImages {
   final String placeholderImage = '${Assets._imagesDir}/placeholder_image.png';
 
   // Feature-specific images
+  final String question = '${Assets._imagesDir}/ic_question.png';
   final String categoryIllustration = '${Assets._imagesDir}/category_illustration.png';
   final String emptyState = '${Assets._imagesDir}/empty_state.png';
 }

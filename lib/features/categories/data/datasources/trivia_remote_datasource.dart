@@ -1,0 +1,36 @@
+import 'package:flutter/foundation.dart';
+import '../../../../core/network/api_client.dart';
+import '../models/category_model.dart';
+
+class TriviaRemoteDataSource {
+  final ApiClient client;
+  TriviaRemoteDataSource(this.client);
+
+  /// Fetch categories from OpenTDB.
+  /// Returns a List<CategoryModel>. Throws ApiException or FormatException if error occur..
+  Future<List<CategoryModel>> fetchCategories() async {
+    final res = await client.get('/api_category.php');
+
+    if (res == null) {
+      throw Exception('Empty response from categories endpoint');
+    }
+
+    try {
+      final dynamicList = res['trivia_categories'];
+      if (dynamicList is! List) {
+        throw FormatException('Invalid categories payload');
+      }
+
+      final categories = dynamicList
+          .map((e) => CategoryModel.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList();
+
+      return categories;
+    } catch (e, st) {
+      if (kDebugMode) {
+        print('Error parsing categories: $e\n$st');
+      }
+      rethrow;
+    }
+  }
+}
