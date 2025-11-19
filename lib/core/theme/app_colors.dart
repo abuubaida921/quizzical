@@ -21,6 +21,10 @@ class AppColors {
   static const Color categoryTitlePrimary = Color(0xFF3F414E);
   static const Color onPrimary = Color(0xFFFFFFFF);
 
+
+  static const Color resultScoreInnerColor = Color(0xFF81E49F);
+  static const Color resultScoreOuterColor = Color(0xFFD2EBD9);
+
   // Shadows (alpha ~ 0.18 -> 0x2E)
   static const Color shadow = Color(0x2E000000);
 

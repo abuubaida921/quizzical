@@ -35,6 +35,7 @@ class AssetIcons {
   final String back = '${Assets._iconsDir}/ic_back.png';
   final String menu = '${Assets._iconsDir}/ic_menu.png';
   final String close = '${Assets._iconsDir}/ic_close.png';
+  final String celebrate = '${Assets._iconsDir}/ic_celebrate.png';
 
   // semantic icon names for app domain
   final String question = '${Assets._iconsDir}/ic_question.svg';
