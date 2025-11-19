@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/routes/app_pages.dart';
 
 import '../controllers/quiz_controller.dart';
-import '../../../../routes/app_pages.dart';
 import '../widgets/exit_quiz_dialogue.dart';
 
-class QuizPlayPage extends GetView<QuizController> {
+class QuizPlayPage extends StatelessWidget {
   const QuizPlayPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final QuizController ctrl = Get.find<QuizController>();
     final theme = Theme.of(context);
 
     return Scaffold(
@@ -23,24 +24,19 @@ class QuizPlayPage extends GetView<QuizController> {
               child: Row(
                 children: [
                   const Spacer(),
-                  Obx(
-                        () => Text(
-                      controller.progressText,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
+                  Obx(() => Text(
+                    ctrl.progressText,
+                  )),
                   const Spacer(),
                   InkWell(
                     onTap: () async {
+                      // Show the dialog and handle result
                       final shouldExit = await Get.dialog<bool>(
                         const ExitQuizDialog(),
                         barrierDismissible: false,
                       );
+
                       if (shouldExit == true) {
-                        // Clear quiz state and go back to categories/home as appropriate
-                        controller.resetProgress(clearQuestions: true);
                         Get.offAllNamed(AppPages.categories);
                       }
                     },
@@ -52,11 +48,6 @@ class QuizPlayPage extends GetView<QuizController> {
                         children: [
                           Text(
                             'EXIT',
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.black87,
-                              letterSpacing: 0.6,
-                            ),
                           ),
                           const SizedBox(width: 8),
                           Icon(Icons.exit_to_app_outlined, color: Colors.black87),
@@ -74,9 +65,9 @@ class QuizPlayPage extends GetView<QuizController> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Obx(() {
-                final q = controller.currentQuestion;
-                if (controller.isLoading.value) {
-                  return const SizedBox(
+                final q = ctrl.currentQuestion;
+                if (ctrl.isLoading.value) {
+                  return SizedBox(
                     height: 160,
                     child: Center(child: CircularProgressIndicator()),
                   );
@@ -85,10 +76,7 @@ class QuizPlayPage extends GetView<QuizController> {
                   return SizedBox(
                     height: 160,
                     child: Center(
-                      child: Text(
-                        'No question available',
-                        style: theme.textTheme.titleMedium,
-                      ),
+                        child: Text('No question available',)
                     ),
                   );
                 }
@@ -105,12 +93,6 @@ class QuizPlayPage extends GetView<QuizController> {
                   ),
                   child: Text(
                     q.question,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontSize: 18,
-                      height: 1.5,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black87,
-                    ),
                   ),
                 );
               }),
@@ -118,121 +100,59 @@ class QuizPlayPage extends GetView<QuizController> {
 
             const SizedBox(height: 18),
 
-            // Options area (handles boolean specially)
+            // Options list
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Obx(() {
-                  final q = controller.currentQuestion;
+                  final q = ctrl.currentQuestion;
                   if (q == null) return const SizedBox.shrink();
 
-                  final showingFeedback = controller.showAnswerFeedback.value;
-                  final selected = controller.selectedAnswer.value;
-                  final options = controller.shuffledAnswersForCurrent();
+                  final options = ctrl.shuffledAnswersForCurrent();
+                  final selected = ctrl.selectedAnswer.value;
+                  final showingFeedback = ctrl.showAnswerFeedback.value;
 
-                  // Boolean question: render two larger buttons (True/False)
-                  if (q.type.toLowerCase() == 'boolean') {
-                    // Normalize expected options to be readable (True/False)
-                    final displayOptions = <String>['True', 'False']
-                        .where((v) => options.map((o) => o.toLowerCase()).contains(v.toLowerCase()))
-                        .toList();
-                    final useOptions = displayOptions.isNotEmpty ? displayOptions : options;
-
-                    return Column(
-                      children: [
-                        const SizedBox(height: 6),
-                        LayoutBuilder(builder: (context, constraints) {
-                          final isWide = constraints.maxWidth > 420;
-                          if (isWide) {
-                            return Row(
-                              children: useOptions.map((opt) {
-                                final isSelected = selected != null && _normalize(selected) == _normalize(opt);
-                                final isCorrect = _normalize(opt) == _normalize(q.correctAnswer);
-                                Color bg = Colors.white;
-                                Widget trailing = _EmptyRadio();
-
-                                if (showingFeedback) {
-                                  if (isCorrect) {
-                                    bg = const Color(0xFFBFEFDC);
-                                    trailing = _ResultCircle(color: const Color(0xFF0E6F66), icon: Icons.check, iconColor: Colors.white);
-                                  } else if (isSelected && !isCorrect) {
-                                    bg = const Color(0xFFF6BFC0);
-                                    trailing = _ResultCircle(color: const Color(0xFFD64555), icon: Icons.close, iconColor: Colors.white);
-                                  }
-                                }
-
-                                return Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-                                    child: _OptionTile(
-                                      text: opt,
-                                      backgroundColor: bg,
-                                      trailing: trailing,
-                                      onTap: () {
-                                        if (!showingFeedback) controller.submitAnswer(opt);
-                                      },
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                            );
-                          } else {
-                            return Column(
-                              children: useOptions.map((opt) {
-                                final isSelected = selected != null && _normalize(selected) == _normalize(opt);
-                                final isCorrect = _normalize(opt) == _normalize(q.correctAnswer);
-                                Color bg = Colors.white;
-                                Widget trailing = _EmptyRadio();
-
-                                if (showingFeedback) {
-                                  if (isCorrect) {
-                                    bg = const Color(0xFFBFEFDC);
-                                    trailing = _ResultCircle(color: const Color(0xFF0E6F66), icon: Icons.check, iconColor: Colors.white);
-                                  } else if (isSelected && !isCorrect) {
-                                    bg = const Color(0xFFF6BFC0);
-                                    trailing = _ResultCircle(color: const Color(0xFFD64555), icon: Icons.close, iconColor: Colors.white);
-                                  }
-                                }
-
-                                return Padding(
-                                  padding: const EdgeInsets.only(bottom: 12),
-                                  child: _OptionTile(
-                                    text: opt,
-                                    backgroundColor: bg,
-                                    trailing: trailing,
-                                    onTap: () {
-                                      if (!showingFeedback) controller.submitAnswer(opt);
-                                    },
-                                  ),
-                                );
-                              }).toList(),
-                            );
-                          }
-                        }),
-                      ],
-                    );
-                  }
-
-                  // Default multiple-choice layout
                   return ListView.separated(
                     itemCount: options.length,
                     shrinkWrap: true,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemBuilder: (context, idx) {
                       final option = options[idx];
-                      final isSelected = selected != null && _normalize(selected) == _normalize(option);
+                      final normalizedOption = option;
+                      final isSelected = selected != null && _normalize(selected) == _normalize(normalizedOption);
                       final isCorrect = _normalize(option) == _normalize(q.correctAnswer);
 
+                      // Determine colors and icon state
                       Color bg = Colors.white;
-                      Widget trailing = _EmptyRadio();
+                      Widget trailing = _EmptyRadio(); // hollow circle in mock
 
                       if (showingFeedback) {
                         if (isCorrect) {
-                          bg = const Color(0xFFBFEFDC);
-                          trailing = _ResultCircle(color: const Color(0xFF0E6F66), icon: Icons.check, iconColor: Colors.white);
+                          bg = const Color(0xFFBFEFDC); // mint green for correct
+                          trailing = _ResultCircle(
+                            color: const Color(0xFF0E6F66),
+                            icon: Icons.check,
+                            iconColor: Colors.white,
+                          );
                         } else if (isSelected && !isCorrect) {
-                          bg = const Color(0xFFF6BFC0);
-                          trailing = _ResultCircle(color: const Color(0xFFD64555), icon: Icons.close, iconColor: Colors.white);
+                          bg = const Color(0xFFF6BFC0); // pale red for incorrect
+                          trailing = _ResultCircle(
+                            color: const Color(0xFFD64555),
+                            icon: Icons.close,
+                            iconColor: Colors.white,
+                          );
+                        } else {
+                          bg = Colors.white;
+                          trailing = _EmptyRadio();
+                        }
+                      } else {
+                        if (isSelected) {
+                          // subtle selected state before feedback
+                          bg = Colors.white;
+                          trailing = _EmptyRadio();
+                        } else {
+                          bg = Colors.white;
+                          trailing = _EmptyRadio();
                         }
                       }
 
@@ -242,7 +162,7 @@ class QuizPlayPage extends GetView<QuizController> {
                         trailing: trailing,
                         onTap: () {
                           if (!showingFeedback) {
-                            controller.submitAnswer(option);
+                            ctrl.submitAnswer(option);
                           }
                         },
                       );
@@ -259,10 +179,11 @@ class QuizPlayPage extends GetView<QuizController> {
                 height: 66,
                 width: double.infinity,
                 child: Obx(() {
-                  final showingFeedback = controller.showAnswerFeedback.value;
-                  final hasSelected = controller.selectedAnswer.value != null || showingFeedback;
+                  final showingFeedback = ctrl.showAnswerFeedback.value;
+                  // If no selection yet, keep Next disabled (encourage answer selection)
+                  final hasSelected = ctrl.selectedAnswer.value != null || showingFeedback;
                   return ElevatedButton(
-                    onPressed: hasSelected ? () => controller.nextQuestion() : null,
+                    onPressed: hasSelected ? () => ctrl.nextQuestion() : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0E5E59),
                       disabledBackgroundColor: Colors.grey.shade400,
@@ -287,7 +208,9 @@ class QuizPlayPage extends GetView<QuizController> {
   }
 
   // Local normalizer (same logic used in the controller) to compare strings consistently.
-  String _normalize(String s) => s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+  String _normalize(String s) {
+    return s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+  }
 }
 
 /// Option tile - rounded white card with text and trailing widget (radio/check/etc).
@@ -298,12 +221,12 @@ class _OptionTile extends StatelessWidget {
   final Widget trailing;
 
   const _OptionTile({
-    super.key,
+    Key? key,
     required this.text,
     required this.onTap,
     required this.backgroundColor,
     required this.trailing,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -328,10 +251,6 @@ class _OptionTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   text,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black87,
-                  ),
                 ),
               ),
               trailing,
@@ -345,8 +264,6 @@ class _OptionTile extends StatelessWidget {
 
 /// Hollow radio circle (when no feedback shown)
 class _EmptyRadio extends StatelessWidget {
-  const _EmptyRadio({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -367,7 +284,7 @@ class _ResultCircle extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
 
-  const _ResultCircle({super.key, required this.color, required this.icon, required this.iconColor});
+  const _ResultCircle({Key? key, required this.color, required this.icon, required this.iconColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
