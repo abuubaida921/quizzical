@@ -17,6 +17,8 @@ class AppColors {
 
   // Text / on-colors
   static const Color textPrimary = Color(0xFF000000);
+  static const Color subTextPrimary = Color(0xFFA1A4B2);
+  static const Color categoryTitlePrimary = Color(0xFF3F414E);
   static const Color onPrimary = Color(0xFFFFFFFF);
 
   // Shadows (alpha ~ 0.18 -> 0x2E)

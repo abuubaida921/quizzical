@@ -19,11 +19,18 @@ class AppTextStyles {
     color: AppColors.onPrimary,
   );
 
-  // Headings (Baloo 2)
-  static TextStyle heading1 = GoogleFonts.baloo2(
+  // Headings (Aoboshi One)
+  static TextStyle heading1 = GoogleFonts.aoboshiOne(
     fontSize: 32,
-    fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.normal,
     color: AppColors.textPrimary,
+  );
+
+  // Headings (Amethysta)
+  static TextStyle heading1SubTitle = GoogleFonts.amethysta(
+    fontSize: 16,
+    fontWeight: FontWeight.normal,
+    color: AppColors.subTextPrimary,
   );
 
   static TextStyle heading2 = GoogleFonts.baloo2(
@@ -57,10 +64,10 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
-  // Caption / Subtitle
-  static TextStyle caption = GoogleFonts.baloo2(
-    fontSize: 12,
-    fontWeight: FontWeight.normal,
-    color: AppColors.textPrimary.withOpacity(0.7),
+  // Cat Title
+  static TextStyle catTitle = GoogleFonts.baloo2(
+    fontSize: 15,
+    fontWeight: FontWeight.bold,
+    color: AppColors.categoryTitlePrimary,
   );
 }

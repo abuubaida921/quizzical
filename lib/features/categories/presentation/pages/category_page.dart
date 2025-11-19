@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 
 import '../../data/models/category_model.dart';
 import '../controllers/category_controller.dart';
@@ -8,7 +9,6 @@ import '../../../../core/constants/assets.dart';
 class CategoryPage extends GetView<CategoryController> {
   const CategoryPage({super.key});
 
-  static const _title = 'Quizzical';
   static const _subtitle = 'choose a category to focus on:';
 
   @override
@@ -26,12 +26,8 @@ class CategoryPage extends GetView<CategoryController> {
             Padding(
               padding: const EdgeInsets.only(top: 6, bottom: 6, left: 2),
               child: Text(
-                _title,
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontSize: 36,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.grey[900],
-                ),
+                'Quizzical',
+                style: AppTextStyles.heading1
               ),
             ),
 
@@ -40,11 +36,7 @@ class CategoryPage extends GetView<CategoryController> {
               padding: const EdgeInsets.only(bottom: 12, left: 2),
               child: Text(
                 _subtitle,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontSize: 15,
-                  color: Colors.grey[600],
-                  fontWeight: FontWeight.w500,
-                ),
+                style: AppTextStyles.heading1SubTitle
               ),
             ),
 
@@ -179,10 +171,8 @@ class _CategoryCard extends StatelessWidget {
                   category.name,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    color: Colors.grey[900],
-                  ),
+                  style: AppTextStyles.catTitle
+
                 ),
               ),
             ],
