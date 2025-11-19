@@ -40,4 +40,13 @@ class AppColors {
       900: Color(0xFF05322A),
     },
   );
+
+  static const List<Color> catBgPalette = [
+    Color(0xFFE8EEFF), // light blue
+    Color(0xFFE8FFEF), // light mint
+    Color(0xFFFFF6D8), // pale yellow
+    Color(0xFFF7E9FF), // pale purple
+    Color(0xFFFFEDEE), // pale pink
+    Color(0xFFFFF1E0), // pale peach
+  ];
 }

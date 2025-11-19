@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../data/models/category_model.dart';
 import '../controllers/category_controller.dart';
 import '../../../../core/constants/assets.dart';
@@ -104,20 +105,10 @@ class _CategoryCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const _CategoryCard({
-    super.key,
     required this.category,
     required this.index,
     required this.onTap,
   });
-
-  static const List<Color> _bgPalette = [
-    Color(0xFFE8EEFF), // light blue
-    Color(0xFFE8FFEF), // light mint
-    Color(0xFFFFF6D8), // pale yellow
-    Color(0xFFF7E9FF), // pale purple
-    Color(0xFFFFEDEE), // pale pink
-    Color(0xFFFFF1E0), // pale peach
-  ];
 
   String _assetForCategory(CategoryModel cat) {
     final key = cat.name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_');
@@ -126,8 +117,7 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = _bgPalette[index % _bgPalette.length];
-    final theme = Theme.of(context);
+    final bg = AppColors.catBgPalette[index % AppColors.catBgPalette.length];
 
     return Material(
       color: bg,
@@ -148,6 +138,7 @@ class _CategoryCard extends StatelessWidget {
                     child: Image.asset(
                       _assetForCategory(category),
                       fit: BoxFit.contain,
+                      height: 100,
                       errorBuilder: (context, error, stackTrace) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 6),
