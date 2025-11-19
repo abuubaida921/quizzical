@@ -92,7 +92,7 @@ class WelcomePage extends StatelessWidget {
                     child: Icon(
                       Icons.help_outline_rounded,
                       size: 72,
-                      color: Color(0xFF6C4DF5),
+                      color: AppColors.secondary
                     ),
                   ),
                 ),

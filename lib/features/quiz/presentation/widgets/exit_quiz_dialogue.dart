@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/core/constants/assets.dart';
+import 'package:quizzical/core/theme/app_colors.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 
 class ExitQuizDialog extends StatelessWidget {
   final String title;
@@ -40,27 +43,24 @@ class ExitQuizDialog extends StatelessWidget {
         children: [
           // Top decorative icon
           Container(
-            width: 72,
-            height: 72,
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
               color: theme.primaryColor.withOpacity(0.12),
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Icon(
-                Icons.exit_to_app_rounded,
-                size: 36,
-                color: theme.primaryColor,
-              ),
+              child: Image.asset(Assets.assetIcons.logout, width: 45, height: 45,color: theme.primaryColor,)
             ),
           ),
 
-          const SizedBox(height: 14),
+          const SizedBox(height: 18),
 
           // Title
           Text(
             title,
             textAlign: TextAlign.center,
+            style: AppTextStyles.sectionTitle.copyWith(color: Colors.black),
           ),
 
           const SizedBox(height: 8),
@@ -69,6 +69,7 @@ class ExitQuizDialog extends StatelessWidget {
           Text(
             message,
             textAlign: TextAlign.center,
+            style: AppTextStyles.heading1SubTitle.copyWith(color: Colors.black),
           ),
 
           const SizedBox(height: 18),
@@ -93,10 +94,7 @@ class ExitQuizDialog extends StatelessWidget {
                   ),
                   child: Text(
                     cancelLabel,
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: AppTextStyles.catTitle.copyWith(color: Colors.black),
                   ),
                 ),
               ),
@@ -105,7 +103,7 @@ class ExitQuizDialog extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => Get.back(result: true),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0E5E59), // app teal-ish color
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 6,
@@ -113,11 +111,7 @@ class ExitQuizDialog extends StatelessWidget {
                   ),
                   child: Text(
                     exitLabel,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.6,
-                    ),
+                    style: AppTextStyles.catTitle.copyWith(color: Colors.white),
                   ),
                 ),
               ),
