@@ -89,7 +89,7 @@ class QuizPlayPage extends StatelessWidget {
 
                 return Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 50),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
