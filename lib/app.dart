@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'bindings/app_bindings.dart';
 import 'routes/app_pages.dart';
 
 class App extends StatelessWidget {
@@ -12,9 +10,6 @@ class App extends StatelessWidget {
     return GetMaterialApp(
       title: 'Quizzical',
       debugShowCheckedModeBanner: false,
-
-      // Initial dependency bindings
-      initialBinding: AppBindings(),
 
       // Routing
       initialRoute: AppPages.splash,
