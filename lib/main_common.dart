@@ -1,9 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'app.dart';
 import 'core/network/network_config.dart';
 
 Future<void> mainCommon({required String environment}) async {
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   NetworkConfig.instance.setEnvironment(environment);
   runApp(const App());
+}
+
+class MyHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(SecurityContext? context) {
+    return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
 }
