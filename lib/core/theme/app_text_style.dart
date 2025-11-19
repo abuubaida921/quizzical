@@ -40,7 +40,7 @@ class AppTextStyles {
   );
 
   static TextStyle heading3 = GoogleFonts.baloo2(
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: FontWeight.w600,
     color: AppColors.textPrimary,
   );

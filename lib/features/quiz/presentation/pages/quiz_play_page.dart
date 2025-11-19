@@ -99,12 +99,13 @@ class QuizPlayPage extends StatelessWidget {
                   ),
                   child: Text(
                     q.question,
+                    style: AppTextStyles.heading3.copyWith(color: Colors.black),
                   ),
                 );
               }),
             ),
 
-            const SizedBox(height: 18),
+            const SizedBox(height: 25),
 
             // Options list
             Expanded(
@@ -182,7 +183,7 @@ class QuizPlayPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
               child: SizedBox(
-                height: 50,
+                height: 55,
                 width: double.infinity,
                 child: Obx(() {
                   final showingFeedback = ctrl.showAnswerFeedback.value;
@@ -197,10 +198,10 @@ class QuizPlayPage extends StatelessWidget {
                     ),
                     child: Text(
                       'Next',
-                      style: theme.textTheme.labelLarge?.copyWith(
+                      style: AppTextStyles.button.copyWith(
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22
                       ),
                     ),
                   );
@@ -257,6 +258,7 @@ class _OptionTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   text,
+                  style: AppTextStyles.heading3.copyWith(color: Colors.black,fontSize: 15),
                 ),
               ),
               trailing,
