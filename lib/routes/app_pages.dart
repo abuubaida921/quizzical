@@ -42,16 +42,7 @@ class AppPages {
     GetPage(
       name: AppPages.resultsPage,
       page: () => const ResultsPage(),
-      binding: BindingsBuilder(() {
-        Get.lazyPut<QuizTriviaRemoteDataSource>(
-          () => QuizTriviaRemoteDataSource(Get.find()),
-          fenix: true,
-        );
-        Get.lazyPut<QuizController>(
-          () => QuizController(Get.find()),
-          fenix: true,
-        );
-      }),
+      binding: QuizPageBindings(),
     ),
   ];
 }
