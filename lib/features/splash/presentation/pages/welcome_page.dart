@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
-
-  static const _primaryButtonColor = Color(0xFF0F7B71);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +31,7 @@ class WelcomePage extends StatelessWidget {
               Text(
                 'Quizzical',
                 style: GoogleFonts.aoboshiOne(
-                  fontSize: 48,
+                  fontSize: 40,
                   fontWeight: FontWeight.normal,
                 ),
               ),
@@ -47,7 +46,7 @@ class WelcomePage extends StatelessWidget {
                       Get.offAllNamed(AppPages.categories);
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: _primaryButtonColor,
+                      backgroundColor: AppColors.primary,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
