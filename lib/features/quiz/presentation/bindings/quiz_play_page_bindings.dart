@@ -3,7 +3,7 @@ import 'package:quizzical/features/quiz/presentation/controllers/quiz_controller
 import '../../../../core/network/api_client.dart';
 import '../../data/datasources/quiz_trivia_remote_data_source.dart';
 
-class QuizPageBindings extends Bindings {
+class QuizPlayPageBindings extends Bindings {
   @override
   void dependencies() {
     Get.put<ApiClient>(ApiClient());
