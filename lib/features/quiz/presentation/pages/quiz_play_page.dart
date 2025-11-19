@@ -182,7 +182,7 @@ class QuizPlayPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
               child: SizedBox(
-                height: 66,
+                height: 50,
                 width: double.infinity,
                 child: Obx(() {
                   final showingFeedback = ctrl.showAnswerFeedback.value;
