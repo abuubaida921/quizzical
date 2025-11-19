@@ -7,10 +7,6 @@ import 'package:get/get.dart';
 import '../../../../core/network/network_config.dart';
 import '../../../../routes/app_pages.dart';
 
-/// SplashController
-/// - owns animations (vsync provided by SingleGetTickerProviderMixin)
-/// - triggers navigation after a short delay
-/// - exposes a simple flavorLabel getter used by the UI
 class SplashController extends GetxController with SingleGetTickerProviderMixin {
   late final AnimationController animController;
   late final Animation<double> scaleAnim;
@@ -51,7 +47,6 @@ class SplashController extends GetxController with SingleGetTickerProviderMixin 
     super.onClose();
   }
 
-  /// Readable environment / flavor label (uppercase) or empty if none.
   String get flavorLabel {
     try {
       final env = NetworkConfig.instance.environment;
