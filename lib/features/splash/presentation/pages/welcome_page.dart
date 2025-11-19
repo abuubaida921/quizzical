@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
@@ -30,10 +31,7 @@ class WelcomePage extends StatelessWidget {
               const SizedBox(height: 22),
               Text(
                 'Quizzical',
-                style: GoogleFonts.aoboshiOne(
-                  fontSize: 40,
-                  fontWeight: FontWeight.normal,
-                ),
+                style: AppTextStyles.appTitle,
               ),
               Spacer(),
               Padding(
@@ -55,11 +53,7 @@ class WelcomePage extends StatelessWidget {
                     ),
                     child: Text(
                       'GET STARTED',
-                      style: GoogleFonts.baloo2(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      ),
+                      style: AppTextStyles.button,
                     ),
                   ),
                 ),
