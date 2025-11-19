@@ -64,6 +64,12 @@ class AppTextStyles {
     color: AppColors.textPrimary,
   );
 
+  static TextStyle sectionTitle = GoogleFonts.baloo2(
+    fontSize: 23,
+    fontWeight: FontWeight.bold,
+    color: AppColors.onPrimary,
+  );
+
   // Cat Title
   static TextStyle catTitle = GoogleFonts.baloo2(
     fontSize: 15,

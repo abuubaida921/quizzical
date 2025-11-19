@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/core/theme/app_colors.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 
 import '../../../../core/constants/assets.dart';
 import '../../../../core/utils/toast_util.dart';
@@ -136,8 +138,8 @@ class QuizConfigPage extends GetView<QuizController> {
               child: Center(
                 child: Image.asset(
                   Assets.assetImages.splashLogo,
-                  width: 140,
-                  height: 140,
+                  width: 350,
+                  height: 220,
                   fit: BoxFit.contain,
                   errorBuilder: (c, e, s) => Icon(Icons.settings_rounded, size: 96, color: Colors.grey[300]),
                 ),
@@ -149,12 +151,12 @@ class QuizConfigPage extends GetView<QuizController> {
             // Title + subtitle
             Text(
               'Quizzical',
-              style: theme.textTheme.headlineMedium?.copyWith(fontSize: 36, fontWeight: FontWeight.w800),
+              style: AppTextStyles.appTitle,
             ),
             const SizedBox(height: 6),
             Text(
               'Configuration',
-              style: theme.textTheme.titleMedium?.copyWith(color: Colors.grey[600]),
+              style: AppTextStyles.heading1SubTitle.copyWith(color: AppColors.categoryTitlePrimary)
             ),
 
             const SizedBox(height: 22),
@@ -168,7 +170,7 @@ class QuizConfigPage extends GetView<QuizController> {
                     // Number of Questions label
                     Text(
                       'Number of Questions',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                      style: AppTextStyles.catTitle,
                     ),
                     const SizedBox(height: 6),
                     Row(
@@ -177,9 +179,22 @@ class QuizConfigPage extends GetView<QuizController> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Select 1–50',
-                                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[500]),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Select 1–50',
+                                    style: AppTextStyles.bodySmall
+                                  ),
+
+                                  // numeric value on right
+                                  Obx(
+                                        () => Text(
+                                      '${numQuestions.value}',
+                                      style: AppTextStyles.bodySmall.copyWith(color: const Color(0xFF1E9AE6),fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ],
                               ),
                               Obx(
                                     () => SliderTheme(
@@ -203,17 +218,6 @@ class QuizConfigPage extends GetView<QuizController> {
                             ],
                           ),
                         ),
-
-                        // numeric value on right
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Obx(
-                                () => Text(
-                              '${numQuestions.value}',
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700, color: const Color(0xFF1E9AE6)),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
 
@@ -222,7 +226,7 @@ class QuizConfigPage extends GetView<QuizController> {
                     // Difficulty Label
                     Text(
                       'Difficulty Level',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                      style: AppTextStyles.catTitle,
                     ),
                     const SizedBox(height: 8),
 
@@ -238,11 +242,11 @@ class QuizConfigPage extends GetView<QuizController> {
                           child: DropdownButton<String>(
                             value: difficulty.value,
                             isExpanded: true,
-                            items: const [
-                              DropdownMenuItem(value: 'any', child: Text('Any Difficulty')),
-                              DropdownMenuItem(value: 'easy', child: Text('Easy')),
-                              DropdownMenuItem(value: 'medium', child: Text('Medium')),
-                              DropdownMenuItem(value: 'hard', child: Text('Hard')),
+                            items: [
+                              DropdownMenuItem(value: 'any', child: Text('Any Difficulty',style: AppTextStyles.bodySmall,)),
+                              DropdownMenuItem(value: 'easy', child: Text('Easy',style: AppTextStyles.bodySmall,)),
+                              DropdownMenuItem(value: 'medium', child: Text('Medium',style: AppTextStyles.bodySmall,)),
+                              DropdownMenuItem(value: 'hard', child: Text('Hard',style: AppTextStyles.bodySmall,)),
                             ],
                             onChanged: (val) => difficulty.value = val ?? 'any',
                           ),
@@ -255,7 +259,7 @@ class QuizConfigPage extends GetView<QuizController> {
                     // Question Type
                     Text(
                       'Question Type',
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                      style: AppTextStyles.catTitle,
                     ),
                     const SizedBox(height: 8),
                     Obx(
@@ -269,10 +273,10 @@ class QuizConfigPage extends GetView<QuizController> {
                           child: DropdownButton<String>(
                             value: type.value,
                             isExpanded: true,
-                            items: const [
-                              DropdownMenuItem(value: 'any', child: Text('Any Type')),
-                              DropdownMenuItem(value: 'multiple', child: Text('Multiple Choice')),
-                              DropdownMenuItem(value: 'boolean', child: Text('True / False')),
+                            items: [
+                              DropdownMenuItem(value: 'any', child: Text('Any Type',style: AppTextStyles.bodySmall,)),
+                              DropdownMenuItem(value: 'multiple', child: Text('Multiple Choice',style: AppTextStyles.bodySmall,)),
+                              DropdownMenuItem(value: 'boolean', child: Text('True / False',style: AppTextStyles.bodySmall,)),
                             ],
                             onChanged: (val) => type.value = val ?? 'any',
                           ),
@@ -291,25 +295,22 @@ class QuizConfigPage extends GetView<QuizController> {
               padding: const EdgeInsets.fromLTRB(0, 0, 0, 18),
               child: SizedBox(
                 width: double.infinity,
-                height: 68,
+                height: 50,
                 child: Obx(
                       () => OutlinedButton(
                     onPressed: isLoading.value ? null : _startQuiz,
                     style: OutlinedButton.styleFrom(
                       side: BorderSide(
                         color: isLoading.value ? Colors.grey.shade400 : const Color(0xFF0E5E59),
-                        width: 2,
+                        width: 1,
                       ),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
                       backgroundColor: Colors.white,
                     ),
                     child: Text(
                       'START',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: isLoading.value ? Colors.grey.shade400 : const Color(0xFF0E5E59),
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 1.4,
+                      style: AppTextStyles.sectionTitle.copyWith(
+                        color: isLoading.value ? Colors.grey.shade400 : const Color(0xFF0E5E59),fontSize: 22
                       ),
                     ),
                   ),
@@ -322,7 +323,7 @@ class QuizConfigPage extends GetView<QuizController> {
               padding: const EdgeInsets.only(bottom: 8.0),
               child: Text(
                 'Category: $categoryName',
-                style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
+                style: AppTextStyles.bodySmall
               ),
             ),
           ],
