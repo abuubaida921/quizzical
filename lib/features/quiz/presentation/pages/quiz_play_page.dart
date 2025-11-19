@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
+import '../../../../core/constants/assets.dart';
 import '../controllers/quiz_controller.dart';
 import '../widgets/exit_quiz_dialogue.dart';
 
@@ -21,39 +23,43 @@ class QuizPlayPage extends StatelessWidget {
             // Top bar: progress + exit
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              child: Row(
+              child: Stack(
                 children: [
-                  const Spacer(),
-                  Obx(() => Text(
-                    ctrl.progressText,
-                  )),
-                  const Spacer(),
-                  InkWell(
-                    onTap: () async {
-                      // Show the dialog and handle result
-                      final shouldExit = await Get.dialog<bool>(
-                        const ExitQuizDialog(),
-                        barrierDismissible: false,
-                      );
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () async {
+                        // Show the dialog and handle result
+                        final shouldExit = await Get.dialog<bool>(
+                          const ExitQuizDialog(),
+                          barrierDismissible: false,
+                        );
 
-                      if (shouldExit == true) {
-                        Get.offAllNamed(AppPages.categories);
-                      }
-                    },
-                    customBorder: const CircleBorder(),
-                    child: Padding(
-                      padding: const EdgeInsets.all(4.0),
+                        if (shouldExit == true) {
+                          Get.offAllNamed(AppPages.categories);
+                        }
+                      },
+                      customBorder: const CircleBorder(),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
                             'EXIT',
+                            style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
                           ),
-                          const SizedBox(width: 8),
-                          Icon(Icons.exit_to_app_outlined, color: Colors.black87),
+                          Image.asset(Assets.assetIcons.logout, width: 25, height: 25, color: Colors.black87),
                         ],
                       ),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Obx(() => Text(
+                        ctrl.progressText,
+                        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                      )),
+                    ],
                   ),
                 ],
               ),
@@ -63,7 +69,7 @@ class QuizPlayPage extends StatelessWidget {
 
             // Question card area
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.only(left: 16,right: 16,top: 10),
               child: Obx(() {
                 final q = ctrl.currentQuestion;
                 if (ctrl.isLoading.value) {
@@ -267,8 +273,8 @@ class _EmptyRadio extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 26,
-      height: 26,
+      width: 20,
+      height: 20,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: Colors.black54, width: 1.6),
@@ -284,13 +290,13 @@ class _ResultCircle extends StatelessWidget {
   final IconData icon;
   final Color iconColor;
 
-  const _ResultCircle({Key? key, required this.color, required this.icon, required this.iconColor}) : super(key: key);
+  const _ResultCircle({required this.color, required this.icon, required this.iconColor});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 36,
-      height: 36,
+      width: 25,
+      height: 25,
       margin: const EdgeInsets.only(left: 12),
       decoration: BoxDecoration(
         color: color,

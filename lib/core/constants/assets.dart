@@ -31,6 +31,7 @@ class AssetIcons {
   const AssetIcons();
 
   // PNG/SVG icon files (use SvgPicture.asset for svg)
+  final String logout = '${Assets._iconsDir}/ic_logout.png';
   final String back = '${Assets._iconsDir}/ic_back.png';
   final String menu = '${Assets._iconsDir}/ic_menu.png';
   final String close = '${Assets._iconsDir}/ic_close.png';
