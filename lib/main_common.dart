@@ -2,10 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'app.dart';
 import 'core/network/network_config.dart';
+import 'di_container.dart' as di;
 
 Future<void> mainCommon({required String environment}) async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+  await di.init();
   NetworkConfig.instance.setEnvironment(environment);
   runApp(const App());
 }

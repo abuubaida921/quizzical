@@ -1,33 +1,36 @@
 import 'package:get/get.dart';
 import 'package:quizzical/routes/app_pages.dart';
-import '../../data/datasources/categories_trivia_remote_data_source.dart';
+import '../../../../core/helper/api_checker.dart';
+import '../../../../data/datasource/model/api_response.dart';
 import '../../data/models/category_model.dart';
+import '../../domain/services/category_service_interface.dart';
 
 class CategoryController extends GetxController {
-  final CategoriesTriviaRemoteDataSource remote;
-  CategoryController(this.remote);
+  final CategoryServiceInterface? categoryServiceInterface;
+  CategoryController({required this.categoryServiceInterface});
+
+  var categorySelectedIndex = 0.obs;
+  List<CategoryModel>? _categoryList;
+  List<CategoryModel>? get categoryList =>_categoryList;
 
   final isLoading = false.obs;
-  final categories = <CategoryModel>[].obs;
-  final error = RxnString();
 
-  @override
-  void onInit() {
-    super.onInit();
-    loadCategories();
+  Future<void> getFeaturedDealList() async {
+    isLoading.value=true;
+    _categoryList =[];
+    ApiResponse apiResponse = await categoryServiceInterface?.getCategoryList();
+    if (apiResponse.response != null && apiResponse.response!.statusCode == 200 && apiResponse.response!.data.toString() != '{}') {
+      _categoryList =[];
+      apiResponse.response!.data.forEach((cData) => _categoryList?.add(CategoryModel.fromJson(cData)));
+      categorySelectedIndex.value = 0;
+    } else {
+      ApiChecker.checkApi( apiResponse);
+    }
+    isLoading.value=false;
   }
 
-  Future<void> loadCategories() async {
-    try {
-      isLoading.value = true;
-      error.value = null;
-      final list = await remote.fetchCategories();
-      categories.assignAll(list);
-    } catch (e) {
-      error.value = e.toString();
-    } finally {
-      isLoading.value = false;
-    }
+  void changeSelectedIndex(int selectedIndex) {
+    categorySelectedIndex.value = selectedIndex;
   }
 
   /// Called when the user taps a category card.

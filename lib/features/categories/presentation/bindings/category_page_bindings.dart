@@ -1,15 +1,10 @@
 import 'package:get/get.dart';
-
-import '../../../../core/network/api_client.dart';
-import '../../data/datasources/categories_trivia_remote_data_source.dart';
+import 'package:quizzical/features/categories/domain/services/category_service_interface.dart';
 import '../controllers/category_controller.dart';
 
 class CategoryPageBindings extends Bindings {
   @override
   void dependencies() {
-    Get.put<ApiClient>(ApiClient());
-
-    Get.lazyPut(() => CategoriesTriviaRemoteDataSource(Get.find<ApiClient>()));
-    Get.lazyPut(() => CategoryController(Get.find<CategoriesTriviaRemoteDataSource>()));
+    Get.lazyPut(() => CategoryController(categoryServiceInterface: Get.find()));
   }
 }

@@ -14,6 +14,8 @@ dependencies:
   http: ^1.6.0
   google_fonts: ^6.3.2
   cherry_toast: ^1.13.0
+  dio: ^5.9.0
+  get_it: ^9.0.5
 
 dev_dependencies:
   flutter_test:
