@@ -1,5 +1,6 @@
 import 'package:quizzical/features/categories/domain/repositories/category_repository_interface.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../data/datasource/model/api_response.dart';
 import '../../../../data/datasource/remote/dio/dio_client.dart';
 import '../../../../data/datasource/remote/exception/api_error_handler.dart';
@@ -12,7 +13,7 @@ class CategoryRepository implements CategoryRepositoryInterface{
   @override
   Future<ApiResponse> getCategoryList() async {
     try {
-      final response = await dioClient!.get('AppConstants.featuredDealUri');
+      final response = await dioClient!.get(AppConstants.categoriesUri);
       return ApiResponse.withSuccess(response);
     } catch (e) {
       return ApiResponse.withError(ApiErrorHandler.getMessage(e));

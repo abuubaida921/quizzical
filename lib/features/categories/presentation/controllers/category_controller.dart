@@ -21,7 +21,7 @@ class CategoryController extends GetxController {
     ApiResponse apiResponse = await categoryServiceInterface?.getCategoryList();
     if (apiResponse.response != null && apiResponse.response!.statusCode == 200 && apiResponse.response!.data.toString() != '{}') {
       _categoryList =[];
-      apiResponse.response!.data.forEach((cData) => _categoryList?.add(CategoryModel.fromJson(cData)));
+      apiResponse.response!.data['trivia_categories'].forEach((cData) => _categoryList?.add(CategoryModel.fromJson(cData)));
       categorySelectedIndex.value = 0;
     } else {
       ApiChecker.checkApi( apiResponse);
