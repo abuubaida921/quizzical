@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
+import 'package:quizzical/core/utils/loader_util.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
@@ -41,7 +42,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
     // Show blocking loader
     Get.dialog(
-      const Center(child: CircularProgressIndicator(color: AppColors.nextBtnBgColor,)),
+      LoaderUtil.showBeautifulLoader(Colors.white),
       barrierDismissible: false,
     );
 

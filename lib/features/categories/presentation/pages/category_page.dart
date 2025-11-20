@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/utils/loader_util.dart';
 import '../controllers/category_controller.dart';
 import '../widgets/category_card_widget.dart';
 
@@ -52,7 +53,7 @@ class _CategoryPageState extends State<CategoryPage> {
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return LoaderUtil.showBeautifulLoader();
                 }
 
                 final categories = controller.categoryList ?? [];
