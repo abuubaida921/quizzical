@@ -3,7 +3,6 @@ import 'package:quizzical/features/categories/presentation/pages/category_page.d
 import 'package:quizzical/features/quiz/presentation/pages/results_page.dart';
 import '../features/categories/presentation/bindings/category_page_bindings.dart';
 import '../features/quiz/presentation/bindings/quiz_page_bindings.dart';
-import '../features/quiz/presentation/bindings/quiz_play_page_bindings.dart';
 import '../features/quiz/presentation/pages/quiz_config_page.dart';
 import '../features/quiz/presentation/pages/quiz_play_page.dart';
 import '../features/splash/presentation/bindings/splash_page_binding.dart';
@@ -38,7 +37,6 @@ class AppPages {
     GetPage(
       name: AppPages.quizPlayPage,
       page: () => const QuizPlayPage(),
-      binding: QuizPlayPageBindings(),
     ),
     GetPage(
       name: AppPages.resultsPage,

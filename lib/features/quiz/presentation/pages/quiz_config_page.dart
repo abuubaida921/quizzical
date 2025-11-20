@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
@@ -6,7 +5,6 @@ import 'package:quizzical/core/theme/app_text_style.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
-import '../../../../core/utils/toast_util.dart';
 import '../controllers/quiz_controller.dart';
 import '../../../../routes/app_pages.dart';
 
@@ -60,7 +58,6 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -68,32 +65,39 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
         minimum: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Page Title
-            Padding(
-              padding: const EdgeInsets.only(top: 6, bottom: 6, left: 2),
-              child: Text(AppConstants.appName, style: AppTextStyles.heading1),
-            ),
-
-            // Subtitle
-            Padding(
-              padding: const EdgeInsets.only(bottom: 12, left: 2),
-              child: Text(
-                'configure your quiz:',
-                style: AppTextStyles.heading1SubTitle,
-              ),
-            ),
 
             // Top Image
             Center(
               child: Image.asset(
                 Assets.assetImages.splashLogo,
-                height: 150,
+                height: 200,
                 fit: BoxFit.contain,
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6, left: 2),
+                      child: Text(AppConstants.appName, style: AppTextStyles.heading1),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20, left: 2),
+                      child: Text(
+                        AppConstants.configPageSubtitle,
+                        style: AppTextStyles.heading1SubTitle,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             Expanded(
               child: SingleChildScrollView(
@@ -235,9 +239,14 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
             const SizedBox(height: 10),
 
             // Footer
-            Text(
-              "Category: $categoryName",
-              style: AppTextStyles.bodySmall,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Category: $categoryName",
+                  style: AppTextStyles.bodySmall,
+                ),
+              ],
             ),
 
             const SizedBox(height: 10),
