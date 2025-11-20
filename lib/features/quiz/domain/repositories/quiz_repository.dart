@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:quizzical/features/quiz/domain/repositories/quiz_repository_interface.dart';
 
 import '../../../../core/constants/app_constants.dart';
@@ -20,13 +21,15 @@ class QuizRepository implements QuizRepositoryInterface{
       final queryParams = {
         'amount': amount.toString(),
         'category': categoryId.toString(),
-        if (difficulty != null) 'difficulty': difficulty,
-        if (type != null) 'type': type,
+        if (difficulty != null && difficulty != 'any') 'difficulty': difficulty,
+        if (type != null && type != 'any') 'type': type,
       };
       final uri = Uri.parse(AppConstants.quizListUri)
           .replace(queryParameters: queryParams);
 
-      print("👉 FULL URL: $uri");
+      if (kDebugMode) {
+        print("FULL URL IS: $uri");
+      }
 
       final response = await dioClient!.get(
         AppConstants.quizListUri,

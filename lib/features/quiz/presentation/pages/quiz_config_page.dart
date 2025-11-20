@@ -40,16 +40,6 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   Future<void> _startQuiz() async {
     if (controller.isLoading.value) return;
 
-    if (difficulty.value == "any") {
-      ToastUtil.warning(Get.context!, "Please select a difficulty level",);
-      return;
-    }
-
-    if (type.value == "any") {
-      ToastUtil.warning(Get.context!, "Please select a valid question type",);
-      return;
-    }
-
     // Show blocking loader
     Get.dialog(
       LoaderUtil.showBeautifulLoader(Colors.white),
