@@ -1,10 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/routes/app_pages.dart';
 import '../../../../core/constants/assets.dart';
 import '../../../../core/theme/app_text_style.dart';
+import '../widgets/score_badge_widget.dart';
 
 class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key});
@@ -57,7 +57,7 @@ class ResultsPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-              _ScoreBadge(percentage: percent),
+              ScoreBadge(percentage: percent),
 
               const SizedBox(height: 20),
 
@@ -102,46 +102,6 @@ class ResultsPage extends StatelessWidget {
 
               const SizedBox(height: 20),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _ScoreBadge extends StatelessWidget {
-  final int percentage;
-  const _ScoreBadge({required this.percentage});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 12),
-      decoration: BoxDecoration(
-        color: AppColors.resultScoreOuterColor.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(22),
-      ),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: AppColors.resultScoreOuterColor,
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 26),
-          decoration: BoxDecoration(
-            color: AppColors.resultScoreInnerColor,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Center(
-            child: Text(
-              '$percentage%',
-              style: AppTextStyles.heading1.copyWith(
-                color: AppColors.categoryTitlePrimary,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
           ),
         ),
       ),

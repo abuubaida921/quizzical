@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
@@ -120,15 +121,15 @@ class QuizPlayPage extends StatelessWidget {
 
                       if (showing) {
                         if (isCorrect) {
-                          bg = const Color(0xFFBFEFDC);
+                          bg = AppColors.rightAnsBgColor;
                           indicator = const _ResultCircle(
-                              color: Color(0xFF0E6F66),
+                              color: AppColors.nextBtnBgColor,
                               icon: Icons.check,
                               iconColor: Colors.white);
                         } else if (isSelected && !isCorrect) {
-                          bg = const Color(0xFFF6BFC0);
+                          bg = AppColors.wrongAnsBgColor;
                           indicator = const _ResultCircle(
-                              color: Color(0xFFD64555),
+                              color: Colors.red,
                               icon: Icons.close,
                               iconColor: Colors.white);
                         }
@@ -164,7 +165,7 @@ class QuizPlayPage extends StatelessWidget {
                   return ElevatedButton(
                     onPressed: canTap ? ctrl.next : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0E5E59),
+                      backgroundColor: AppColors.nextBtnBgColor,
                       disabledBackgroundColor: Colors.grey.shade400,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18)),

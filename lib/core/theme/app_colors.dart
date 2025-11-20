@@ -25,6 +25,11 @@ class AppColors {
   static const Color resultScoreInnerColor = Color(0xFF81E49F);
   static const Color resultScoreOuterColor = Color(0xFFD2EBD9);
 
+  static const Color nextBtnBgColor = Color(0xFF004643);
+
+  static const Color wrongAnsBgColor = Color(0xFFF99D9E);
+  static const Color rightAnsBgColor = Color(0xFFABD1C6);
+
   // Shadows (alpha ~ 0.18 -> 0x2E)
   static const Color shadow = Color(0x2E000000);
 
