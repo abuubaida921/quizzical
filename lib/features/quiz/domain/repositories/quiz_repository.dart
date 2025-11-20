@@ -23,6 +23,7 @@ class QuizRepository implements QuizRepositoryInterface{
         'category': categoryId.toString(),
         if (difficulty != null && difficulty != 'any') 'difficulty': difficulty,
         if (type != null && type != 'any') 'type': type,
+        'encode':'base64'
       };
       final uri = Uri.parse(AppConstants.quizListUri)
           .replace(queryParameters: queryParams);

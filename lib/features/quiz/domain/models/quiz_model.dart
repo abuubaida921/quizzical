@@ -1,3 +1,4 @@
+import 'dart:convert';
 class QuestionModel {
   final String type;
   final String difficulty;
@@ -29,32 +30,39 @@ class QuestionModel {
       category: category ?? this.category,
       question: question ?? this.question,
       correctAnswer: correctAnswer ?? this.correctAnswer,
-      incorrectAnswers: incorrectAnswers ?? List<String>.from(this.incorrectAnswers),
+      incorrectAnswers:
+      incorrectAnswers ?? List<String>.from(this.incorrectAnswers),
     );
   }
 
-  factory QuestionModel.fromJson(Map<String, dynamic> json) {
-    final rawQuestion = json['question']?.toString() ?? '';
-    final rawCorrect = json['correct_answer']?.toString() ?? '';
-    final rawIncorrect = json['incorrect_answers'];
+  static String _decodeBase64AndHtml(String? raw) {
+    if (raw == null || raw.isEmpty) return '';
 
-    final decodedQuestion = _decodeHtml(rawQuestion);
-    final decodedCorrect = _decodeHtml(rawCorrect);
-
-    final incorrects = <String>[];
-    if (rawIncorrect is List) {
-      for (final item in rawIncorrect) {
-        incorrects.add(_decodeHtml(item?.toString() ?? ''));
-      }
+    String decodedBase64;
+    try {
+      decodedBase64 = utf8.decode(base64.decode(raw));
+    } catch (_) {
+      decodedBase64 = raw;
     }
+
+    return _decodeHtml(decodedBase64);
+  }
+
+  factory QuestionModel.fromJson(Map<String, dynamic> json) {
+    final rawIncorrect = json['incorrect_answers'];
 
     return QuestionModel(
       type: (json['type'] as String?)?.trim() ?? 'multiple',
       difficulty: (json['difficulty'] as String?)?.trim() ?? 'easy',
       category: (json['category'] as String?)?.trim() ?? '',
-      question: decodedQuestion,
-      correctAnswer: decodedCorrect,
-      incorrectAnswers: incorrects,
+      question: _decodeBase64AndHtml(json['question']),
+      correctAnswer: _decodeBase64AndHtml(json['correct_answer']),
+
+      incorrectAnswers: rawIncorrect is List
+          ? rawIncorrect
+          .map((e) => _decodeBase64AndHtml(e.toString()))
+          .toList()
+          : [],
     );
   }
 
@@ -71,7 +79,6 @@ class QuestionModel {
   String toString() {
     return 'QuestionModel(type: $type, difficulty: $difficulty, category: $category, question: $question, correctAnswer: $correctAnswer, incorrectAnswers: $incorrectAnswers)';
   }
-
   static String _decodeHtml(String input) {
     if (input.isEmpty) return input;
 
@@ -87,14 +94,12 @@ class QuestionModel {
 
     out = out.replaceAllMapped(RegExp(r'&#(\d+);'), (m) {
       final code = int.tryParse(m[1] ?? '');
-      if (code == null) return m[0] ?? '';
-      return String.fromCharCode(code);
+      return code == null ? m[0] ?? '' : String.fromCharCode(code);
     });
 
     out = out.replaceAllMapped(RegExp(r'&#x([0-9a-fA-F]+);'), (m) {
       final code = int.tryParse(m[1] ?? '', radix: 16);
-      if (code == null) return m[0] ?? '';
-      return String.fromCharCode(code);
+      return code == null ? m[0] ?? '' : String.fromCharCode(code);
     });
 
     return out;
