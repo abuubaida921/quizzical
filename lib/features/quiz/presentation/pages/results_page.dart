@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
+import 'package:quizzical/routes/app_pages.dart';
 import '../../../../core/constants/assets.dart';
 import '../../../../core/theme/app_text_style.dart';
 
@@ -39,11 +40,8 @@ class ResultsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
 
-              Expanded(
-                flex: 3,
-                child: Center(
-                  child: Image.asset(Assets.assetIcons.celebrate,width: 250,),
-                ),
+              Center(
+                child: Image.asset(Assets.assetIcons.celebrate,width: 350,),
               ),
 
               const SizedBox(height: 8),
@@ -57,7 +55,7 @@ class ResultsPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 14),
+              const SizedBox(height: 20),
 
               _ScoreBadge(percentage: percent),
 
@@ -75,14 +73,14 @@ class ResultsPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 30),
+              Spacer(),
 
               SizedBox(
-                height: 55,
+                height: 60,
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    Get.offAllNamed('/categories');
+                    Get.offAllNamed(AppPages.categories);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF066A66),
@@ -118,7 +116,7 @@ class _ScoreBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 40,vertical: 12),
       decoration: BoxDecoration(
         color: AppColors.resultScoreOuterColor.withOpacity(0.2),
         borderRadius: BorderRadius.circular(22),
