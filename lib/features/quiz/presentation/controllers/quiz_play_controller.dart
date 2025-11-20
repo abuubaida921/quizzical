@@ -6,16 +6,13 @@ import '../../../../routes/app_pages.dart';
 class QuizPlayController extends GetxController {
   final QuizController quizController = Get.find<QuizController>();
 
-  // States
   final RxInt currentIndex = 0.obs;
   final RxBool showFeedback = false.obs;
   final RxString selectedAnswer = ''.obs;
   final RxInt score = 0.obs;
   final RxList<String> currentOptions = <String>[].obs;
 
-  // Get questions list from QuizController
   List<QuestionModel> get questions => quizController.questionList ?? [];
-
   QuestionModel get currentQuestion => questions[currentIndex.value];
 
   @override
@@ -24,23 +21,22 @@ class QuizPlayController extends GetxController {
     _loadOptionsForCurrentQuestion();
   }
 
-
-  // Shuffled options (auto handles boolean/multiple)
-  List<String> get options {
-    if (currentQuestion.type == "boolean") {
-      return ["True", "False"];
-    } else {
-      final list = [...currentQuestion.incorrectAnswers, currentQuestion.correctAnswer];
-      list.shuffle();
-      return list;
-    }
-  }
-
-  // Normalize Strings
   String normalize(String s) =>
       s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
 
-  // Submit Answer
+  // Load shuffled options
+  void _loadOptionsForCurrentQuestion() {
+    final q = currentQuestion;
+    if (q.type == "boolean") {
+      currentOptions.value = ["True", "False"];
+    } else {
+      final list = [...q.incorrectAnswers, q.correctAnswer];
+      list.shuffle();
+      currentOptions.value = list;
+    }
+  }
+
+  // Submit answer
   void submitAnswer(String answer) {
     if (showFeedback.value) return;
 
@@ -58,9 +54,9 @@ class QuizPlayController extends GetxController {
 
     if (currentIndex.value < questions.length - 1) {
       currentIndex.value++;
-      showFeedback.value = false;
       selectedAnswer.value = "";
-      _loadOptionsForCurrentQuestion();  // ← FIX
+      showFeedback.value = false;
+      _loadOptionsForCurrentQuestion();
     } else {
       Get.offNamed(AppPages.resultsPage, arguments: {
         "score": score.value,
@@ -69,20 +65,5 @@ class QuizPlayController extends GetxController {
     }
   }
 
-
-  String get progressText =>
-      "${currentIndex.value + 1}/${questions.length}";
-
-  void _loadOptionsForCurrentQuestion() {
-    final q = currentQuestion;
-
-    if (q.type == "boolean") {
-      currentOptions.value = ["True", "False"];
-    } else {
-      final list = [...q.incorrectAnswers, q.correctAnswer];
-      list.shuffle();
-      currentOptions.value = list;
-    }
-  }
-
+  String get progressText => "${currentIndex.value + 1}/${questions.length}";
 }

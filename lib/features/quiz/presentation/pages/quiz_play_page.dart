@@ -18,161 +18,165 @@ class QuizPlayPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F3F4),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: InkWell(
-                      onTap: () async {
-                        final shouldExit = await Get.dialog<bool>(
-                          const ExitQuizDialog(),
-                          barrierDismissible: false,
-                        );
-                        if (shouldExit == true) {
-                          Get.offAllNamed(AppPages.categories);
-                        }
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('EXIT',
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) async {
+          if (!didPop) {
+            final exit = await Get.dialog(
+              const ExitQuizDialog(),
+              barrierDismissible: false,
+            );
+            if (exit == true) Get.offAllNamed(AppPages.categories);
+          }
+        },
+        child: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: InkWell(
+                        onTap: () async {
+                          final shouldExit = await Get.dialog<bool>(
+                            const ExitQuizDialog(),
+                            barrierDismissible: false,
+                          );
+                          if (shouldExit == true) {
+                            Get.offAllNamed(AppPages.categories);
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'EXIT',
                               style: AppTextStyles.bodyLarge.copyWith(
-                                  fontWeight: FontWeight.bold)),
-                          Image.asset(
-                            Assets.assetIcons.logout,
-                            width: 25,
-                            height: 25,
-                            color: Colors.black87,
-                          ),
-                        ],
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Image.asset(
+                              Assets.assetIcons.logout,
+                              width: 25,
+                              height: 25,
+                              color: Colors.black87,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  Center(
-                    child: Obx(() => Text(
+                    Obx(() => Text(
                       ctrl.progressText,
-                      style: AppTextStyles.bodyLarge.copyWith(
-                          fontWeight: FontWeight.bold),
+                      style: AppTextStyles.bodyLarge
+                          .copyWith(fontWeight: FontWeight.bold),
                     )),
-                  )
-                ],
+                  ],
+                ),
               ),
-            ),
 
-            const SizedBox(height: 6),
+              const SizedBox(height: 6),
 
-            // --------------------
-            // Question Card
-            // --------------------
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Obx(() {
-                final q = ctrl.currentQuestion;
-                return Container(
-                  width: double.infinity,
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                    boxShadow: [
-                      BoxShadow(
-                          color: Colors.black.withOpacity(0.06),
-                          blurRadius: 18,
-                          offset: const Offset(0, 8)),
-                    ],
-                  ),
-                  child: Text(
-                    q.question,
-                    style: AppTextStyles.heading3.copyWith(color: Colors.black),
-                  ),
-                );
-              }),
-            ),
-
-            const SizedBox(height: 25),
-
-            // --------------------
-            // Options
-            // --------------------
-            Expanded(
-              child: Padding(
+              Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Obx(() {
-                  final options = ctrl.currentOptions;
-                  final selected = ctrl.selectedAnswer.value;
-                  final showing = ctrl.showFeedback.value;
-                  final correct = ctrl.currentQuestion.correctAnswer;
-
-                  return ListView.separated(
-                    itemCount: options.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (ctx, i) {
-                      final opt = options[i];
-                      final isSelected = ctrl.normalize(selected) == ctrl.normalize(opt);
-                      final isCorrect = ctrl.normalize(opt) == ctrl.normalize(correct);
-
-                      Color bg = Colors.white;
-                      Widget indicator = _EmptyRadio();
-
-                      if (showing) {
-                        if (isCorrect) {
-                          bg = AppColors.rightAnsBgColor;
-                          indicator = const _ResultCircle(
-                              color: AppColors.nextBtnBgColor,
-                              icon: Icons.check,
-                              iconColor: Colors.white);
-                        } else if (isSelected && !isCorrect) {
-                          bg = AppColors.wrongAnsBgColor;
-                          indicator = const _ResultCircle(
-                              color: Colors.red,
-                              icon: Icons.close,
-                              iconColor: Colors.white);
-                        }
-                      }
-
-                      return _OptionTile(
-                        text: opt,
-                        backgroundColor: bg,
-                        trailing: indicator,
-                        onTap: () {
-                          if (!showing) ctrl.submitAnswer(opt);
-                        },
-                      );
-                    },
+                  final q = ctrl.currentQuestion;
+                  return Container(
+                    width: double.infinity,
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                      boxShadow: [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.06),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8)),
+                      ],
+                    ),
+                    child: Text(
+                      q.question,
+                      style: AppTextStyles.heading3
+                          .copyWith(color: Colors.black),
+                    ),
                   );
                 }),
               ),
-            ),
 
-            // --------------------
-            // Bottom Next Button
-            // --------------------
-            Obx(() {
-              final canTap = ctrl.selectedAnswer.value.isNotEmpty;
-              return PrimaryButtonWidget(
-                title: "Next",
-                onPressed: canTap ? ctrl.next : null,
-                isEnabled: canTap,
-                height: 55,
-              );
-            })
+              const SizedBox(height: 25),
 
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Obx(() {
+                    final options = ctrl.currentOptions;
+                    final selected = ctrl.selectedAnswer.value;
+                    final showing = ctrl.showFeedback.value;
+                    final correct = ctrl.currentQuestion.correctAnswer;
+
+                    return ListView.separated(
+                      itemCount: options.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
+                      itemBuilder: (ctx, i) {
+                        final opt = options[i];
+                        final isSelected =
+                            ctrl.normalize(selected) == ctrl.normalize(opt);
+                        final isCorrect =
+                            ctrl.normalize(opt) ==
+                                ctrl.normalize(correct);
+
+                        Color bg = Colors.white;
+                        Widget indicator = const _EmptyRadio();
+
+                        if (showing) {
+                          if (isCorrect) {
+                            bg = AppColors.rightAnsBgColor;
+                            indicator = const _ResultCircle(
+                                color: AppColors.nextBtnBgColor,
+                                icon: Icons.check,
+                                iconColor: Colors.white);
+                          } else if (isSelected && !isCorrect) {
+                            bg = AppColors.wrongAnsBgColor;
+                            indicator = const _ResultCircle(
+                                color: Colors.red,
+                                icon: Icons.close,
+                                iconColor: Colors.white);
+                          }
+                        }
+
+                        return _OptionTile(
+                          text: opt,
+                          backgroundColor: bg,
+                          trailing: indicator,
+                          onTap: () {
+                            if (!showing) ctrl.submitAnswer(opt);
+                          },
+                        );
+                      },
+                    );
+                  }),
+                ),
+              ),
+
+              Obx(() {
+                final canTap = ctrl.showFeedback.value;
+                return PrimaryButtonWidget(
+                  title: "Next",
+                  onPressed: canTap ? ctrl.next : null,
+                  isEnabled: canTap,
+                  height: 55,
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-// ----------------------------
-// UI Widgets
-// ----------------------------
 
 class _OptionTile extends StatelessWidget {
   final String text;

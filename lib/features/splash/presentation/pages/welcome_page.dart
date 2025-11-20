@@ -34,7 +34,7 @@ class WelcomePage extends StatelessWidget {
               ),
               Spacer(),
               PrimaryButtonWidget(
-                title: "Start Quiz",
+                title: "START QUIZ",
                 onPressed: () => Get.offAllNamed(AppPages.categories),
               )
             ],
