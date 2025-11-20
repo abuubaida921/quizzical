@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/core/utils/loader_util.dart';
+import 'package:quizzical/core/utils/toast_util.dart';
 
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
@@ -38,6 +39,16 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
   Future<void> _startQuiz() async {
     if (controller.isLoading.value) return;
+
+    if (difficulty.value == "any") {
+      ToastUtil.warning(Get.context!, "Please select a difficulty level",);
+      return;
+    }
+
+    if (type.value == "any") {
+      ToastUtil.warning(Get.context!, "Please select a valid question type",);
+      return;
+    }
 
     // Show blocking loader
     Get.dialog(
