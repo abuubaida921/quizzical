@@ -1,7 +1,7 @@
 abstract class QuizServiceInterface {
   Future<dynamic> getQuizList({
     required int amount,
-    int? category,
+    required int categoryId,
     String? difficulty,
     String? type,
   });

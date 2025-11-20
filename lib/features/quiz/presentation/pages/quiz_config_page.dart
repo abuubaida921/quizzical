@@ -48,12 +48,12 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
     );
 
     try {
-      await controller.loadQuiz(
-        amount: numQuestions.value,
-        categoryId: categoryId,
-        difficulty: difficulty.value,
-        type: type.value,
-      );
+      // await controller.loadQuiz(
+      //   amount: numQuestions.value,
+      //   categoryId: categoryId,
+      //   difficulty: difficulty.value,
+      //   type: type.value,
+      // );
 
       if (Get.isDialogOpen == true) Get.back();
       Get.offNamed(AppPages.quizPlayPage);

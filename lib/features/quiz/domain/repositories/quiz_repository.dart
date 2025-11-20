@@ -13,14 +13,14 @@ class QuizRepository implements QuizRepositoryInterface{
   @override
   Future<ApiResponse> getQuizList({
     required int amount,
-    int? category,
+    required int categoryId,
     String? difficulty,
     String? type,
   }) async {
     try {
       final queryParams = {
         'amount': amount.toString(),
-        if (category != null) 'category': category.toString(),
+        'category': categoryId.toString(),
         if (difficulty != null) 'difficulty': difficulty,
         if (type != null) 'type': type,
       };

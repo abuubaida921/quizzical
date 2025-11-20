@@ -10,13 +10,13 @@ class QuizService implements QuizServiceInterface {
   @override
   Future<dynamic> getQuizList({
     required int amount,
-    int? category,
+    required int categoryId,
     String? difficulty,
     String? type,
   }) async {
     return await quizRepositoryInterface.getQuizList(
       amount: amount,
-      category: category,
+      categoryId: categoryId,
       difficulty: difficulty,
       type: type,
     );

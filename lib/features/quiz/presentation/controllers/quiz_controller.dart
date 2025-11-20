@@ -1,14 +1,15 @@
+import 'dart:developer' as dev;
 import 'dart:math';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:quizzical/features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
+import 'package:quizzical/features/quiz/domain/services/quiz_service_interface.dart';
 import 'package:quizzical/routes/app_pages.dart';
+import '../../../../core/helper/api_checker.dart';
+import '../../../../data/datasource/model/api_response.dart';
 import '../../domain/models/quiz_model.dart';
 
 class QuizController extends GetxController {
-  final QuizTriviaRemoteDataSource remote;
-
-  QuizController(this.remote);
+  final QuizServiceInterface? quizServiceInterface;
+  QuizController({required this.quizServiceInterface});
 
   // State
   final isLoading = false.obs;
@@ -38,55 +39,77 @@ class QuizController extends GetxController {
     super.onInit();
 
     // Whenever index changes, clear selected answer and hide feedback
-    ever(currentIndex, (_) {
-      selectedAnswer.value = null;
-      showAnswerFeedback.value = false;
-    });
+    // ever(currentIndex, (_) {
+    //   selectedAnswer.value = null;
+    //   showAnswerFeedback.value = false;
+    // });
   }
 
-  Future<void> loadQuiz({
+  Future<void> loadQuizList({
     required int amount,
     required int categoryId,
     String difficulty = 'any',
     String type = 'any',
   }) async {
-    isLoading.value = true;
-    error.value = null;
-    _shuffledCache.clear();
 
-    try {
-      final raw = await remote.fetchQuestions(
-        amount: amount,
-        categoryId: categoryId,
-        difficulty: difficulty,
-        type: type,
-      );
-
-      final List<QuestionModel> parsed = _parseRawQuestions(raw);
-
-      if (parsed.isEmpty) {
-        throw Exception('No questions returned from API');
-      }
-
-      questions.assignAll(parsed);
-
-      // reset progress
-      currentIndex.value = 0;
-      score.value = 0;
-      selectedAnswer.value = null;
-      showAnswerFeedback.value = false;
-    } catch (e, st) {
-      if (Get.isLogEnable) {
-        if (kDebugMode) {
-          print('QuizController.loadQuiz error: $e\n$st');
-        }
-      }
-      error.value = e.toString();
-      rethrow;
-    } finally {
-      isLoading.value = false;
+    isLoading.value=true;
+    // _categoryList =[];
+    ApiResponse apiResponse = await quizServiceInterface?.getQuizList(amount: amount, categoryId: categoryId);
+    dev.log('API Code: ${apiResponse.response!.statusCode}');
+    dev.log('API Response: ${apiResponse.response}');
+    if (apiResponse.response != null && apiResponse.response!.statusCode == 200 && apiResponse.response!.data.toString() != '{}') {
+      // _categoryList =[];
+      // apiResponse.response!.data['trivia_categories'].forEach((cData) => _categoryList?.add(CategoryModel.fromJson(cData)));
+      // categorySelectedIndex.value = 0;
+    } else {
+      ApiChecker.checkApi( apiResponse);
     }
+    isLoading.value=false;
   }
+
+  // Future<void> loadQuiz({
+  //   required int amount,
+  //   required int categoryId,
+  //   String difficulty = 'any',
+  //   String type = 'any',
+  // }) async {
+  //   isLoading.value = true;
+  //   error.value = null;
+  //   _shuffledCache.clear();
+  //
+  //   try {
+  //     final raw = await remote.fetchQuestions(
+  //       amount: amount,
+  //       categoryId: categoryId,
+  //       difficulty: difficulty,
+  //       type: type,
+  //     );
+  //
+  //     final List<QuestionModel> parsed = _parseRawQuestions(raw);
+  //
+  //     if (parsed.isEmpty) {
+  //       throw Exception('No questions returned from API');
+  //     }
+  //
+  //     questions.assignAll(parsed);
+  //
+  //     // reset progress
+  //     currentIndex.value = 0;
+  //     score.value = 0;
+  //     selectedAnswer.value = null;
+  //     showAnswerFeedback.value = false;
+  //   } catch (e, st) {
+  //     if (Get.isLogEnable) {
+  //       if (kDebugMode) {
+  //         print('QuizController.loadQuiz error: $e\n$st');
+  //       }
+  //     }
+  //     error.value = e.toString();
+  //     rethrow;
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 
   List<QuestionModel> _parseRawQuestions(dynamic raw) {
     if (raw == null) {
