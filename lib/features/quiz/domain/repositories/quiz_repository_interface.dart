@@ -1,4 +1,4 @@
-import '../../../../core/network/repo_interface.dart';
+import '../../../../core/interface/repo_interface.dart';
 
 abstract class QuizRepositoryInterface implements RepositoryInterface {
   Future<dynamic> getQuizList({

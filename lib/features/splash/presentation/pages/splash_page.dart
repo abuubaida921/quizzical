@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:quizzical/core/theme/app_colors.dart';
+import 'package:quizzical/core/theme/app_text_style.dart';
 
 import '../../../../core/constants/app_constants.dart';
+import '../../../../core/constants/assets.dart';
 import '../controllers/splash_controller.dart';
 
 
@@ -36,31 +39,10 @@ class SplashPage extends GetView<SplashController> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Container(
-                      width: 140,
-                      height: 140,
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor,
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.12),
-                            blurRadius: 12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Q',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 64,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                      ),
+                    SizedBox(
+                      width: 250,
+                      height: 250,
+                      child: Image.asset(Assets.assetImages.welcomeIllustration,),
                     ),
                     const SizedBox(height: 18),
                     Text(
@@ -73,7 +55,7 @@ class SplashPage extends GetView<SplashController> {
                     const SizedBox(height: 8),
                     Text(
                       'Challenge your knowledge',
-                      style: theme.textTheme.bodyMedium,
+                      style: AppTextStyles.bodyMedium
                     ),
                   ],
                 ),
@@ -110,11 +92,11 @@ class SplashPage extends GetView<SplashController> {
                 children: [
                   const SizedBox(height: 4),
                   SizedBox(
-                    width: 48,
+                    width: 70,
                     height: 6,
                     child: LinearProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-                      backgroundColor: theme.primaryColor.withOpacity(0.15),
+                      valueColor: AlwaysStoppedAnimation<Color>(AppColors.nextBtnBgColor),
+                      backgroundColor: Colors.grey,
                     ),
                   ),
                 ],
