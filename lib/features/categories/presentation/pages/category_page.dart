@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
+import '../../../../core/constants/app_constants.dart';
 import '../controllers/category_controller.dart';
 import '../widgets/category_card_widget.dart';
 
@@ -35,7 +36,7 @@ class _CategoryPageState extends State<CategoryPage> {
             // Title
             Padding(
               padding: const EdgeInsets.only(top: 6, bottom: 6, left: 2),
-              child: Text('Quizzical', style: AppTextStyles.heading1),
+              child: Text(AppConstants.appName, style: AppTextStyles.heading1),
             ),
 
             // Subtitle

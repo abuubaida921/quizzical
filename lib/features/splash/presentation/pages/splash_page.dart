@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../controllers/splash_controller.dart';
 
 
@@ -63,7 +64,7 @@ class SplashPage extends GetView<SplashController> {
                     ),
                     const SizedBox(height: 18),
                     Text(
-                      'Quizzical',
+                      AppConstants.appName,
                       style: GoogleFonts.aoboshiOne(
                         fontSize: 32,
                         fontWeight: FontWeight.w700,

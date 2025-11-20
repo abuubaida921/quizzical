@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
 import '../../../../core/utils/toast_util.dart';
 import '../controllers/quiz_controller.dart';
@@ -71,7 +72,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
             // Page Title
             Padding(
               padding: const EdgeInsets.only(top: 6, bottom: 6, left: 2),
-              child: Text('Quizzical', style: AppTextStyles.heading1),
+              child: Text(AppConstants.appName, style: AppTextStyles.heading1),
             ),
 
             // Subtitle

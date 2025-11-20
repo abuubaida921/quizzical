@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'core/constants/app_constants.dart';
 import 'routes/app_pages.dart';
 
 class App extends StatelessWidget {
@@ -8,7 +9,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Quizzical',
+      title: AppConstants.appName,
       debugShowCheckedModeBanner: false,
 
       // Routing

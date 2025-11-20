@@ -26,6 +26,7 @@ class AppColors {
   static const Color resultScoreOuterColor = Color(0xFFD2EBD9);
 
   static const Color nextBtnBgColor = Color(0xFF004643);
+  static const Color primaryBtnBgColor = Color(0xFF02706B);
 
   static const Color wrongAnsBgColor = Color(0xFFF99D9E);
   static const Color rightAnsBgColor = Color(0xFFABD1C6);
