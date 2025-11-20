@@ -54,6 +54,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
       //   difficulty: difficulty.value,
       //   type: type.value,
       // );
+      await controller.loadQuizList(amount: numQuestions.value, categoryId: categoryId);
 
       if (Get.isDialogOpen == true) Get.back();
       Get.offNamed(AppPages.quizPlayPage);

@@ -34,6 +34,10 @@ class QuizController extends GetxController {
   int get currentNumber => totalQuestions == 0 ? 0 : currentIndex.value + 1;
   String get progressText => '$currentNumber / $totalQuestions';
 
+
+  List<QuestionModel>? _questionList;
+  List<QuestionModel>? get questionList =>_questionList;
+
   @override
   void onInit() {
     super.onInit();
@@ -53,14 +57,11 @@ class QuizController extends GetxController {
   }) async {
 
     isLoading.value=true;
-    // _categoryList =[];
+    _questionList =[];
     ApiResponse apiResponse = await quizServiceInterface?.getQuizList(amount: amount, categoryId: categoryId);
-    dev.log('API Code: ${apiResponse.response!.statusCode}');
-    dev.log('API Response: ${apiResponse.response}');
     if (apiResponse.response != null && apiResponse.response!.statusCode == 200 && apiResponse.response!.data.toString() != '{}') {
-      // _categoryList =[];
-      // apiResponse.response!.data['trivia_categories'].forEach((cData) => _categoryList?.add(CategoryModel.fromJson(cData)));
-      // categorySelectedIndex.value = 0;
+      _questionList =[];
+      apiResponse.response!.data['results'].forEach((cData) => _questionList?.add(QuestionModel.fromJson(cData)));
     } else {
       ApiChecker.checkApi( apiResponse);
     }
