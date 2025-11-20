@@ -7,7 +7,10 @@ import 'package:quizzical/routes/app_pages.dart';
 import '../../../../core/constants/assets.dart';
 import '../../../../shared/widgets/primary_button_widget.dart';
 import '../controllers/quiz_play_controller.dart';
+import '../widgets/empty_radio_widget.dart';
 import '../widgets/exit_quiz_dialogue.dart';
+import '../widgets/option_tile_widget.dart';
+import '../widgets/result_circle_widget.dart';
 
 class QuizPlayPage extends StatelessWidget {
   const QuizPlayPage({super.key});
@@ -128,25 +131,25 @@ class QuizPlayPage extends StatelessWidget {
                                 ctrl.normalize(correct);
 
                         Color bg = Colors.white;
-                        Widget indicator = const _EmptyRadio();
+                        Widget indicator = const EmptyRadioWidget();
 
                         if (showing) {
                           if (isCorrect) {
                             bg = AppColors.rightAnsBgColor;
-                            indicator = const _ResultCircle(
+                            indicator = const ResultCircleWidget(
                                 color: AppColors.nextBtnBgColor,
                                 icon: Icons.check,
                                 iconColor: Colors.white);
                           } else if (isSelected && !isCorrect) {
                             bg = AppColors.wrongAnsBgColor;
-                            indicator = const _ResultCircle(
+                            indicator = const ResultCircleWidget(
                                 color: Colors.red,
                                 icon: Icons.close,
                                 iconColor: Colors.white);
                           }
                         }
 
-                        return _OptionTile(
+                        return OptionTileWidget(
                           text: opt,
                           backgroundColor: bg,
                           trailing: indicator,
@@ -177,97 +180,3 @@ class QuizPlayPage extends StatelessWidget {
   }
 }
 
-
-class _OptionTile extends StatelessWidget {
-  final String text;
-  final VoidCallback onTap;
-  final Color backgroundColor;
-  final Widget trailing;
-
-  const _OptionTile({
-    required this.text,
-    required this.onTap,
-    required this.backgroundColor,
-    required this.trailing,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 200),
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.black.withOpacity(0.03),
-              blurRadius: 8,
-              offset: const Offset(0, 6)),
-        ],
-      ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: SizedBox(
-          height: 64,
-          child: Row(
-            children: [
-              Expanded(
-                child: Text(
-                  text,
-                  style: AppTextStyles.heading3.copyWith(
-                      color: Colors.black, fontSize: 15),
-                ),
-              ),
-              trailing
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyRadio extends StatelessWidget {
-  const _EmptyRadio();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 20,
-      height: 20,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: Colors.black54, width: 1.6),
-      ),
-      margin: const EdgeInsets.only(left: 12),
-    );
-  }
-}
-
-class _ResultCircle extends StatelessWidget {
-  final Color color;
-  final IconData icon;
-  final Color iconColor;
-
-  const _ResultCircle({
-    required this.color,
-    required this.icon,
-    required this.iconColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 25,
-      height: 25,
-      margin: const EdgeInsets.only(left: 12),
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(icon, size: 18, color: iconColor),
-    );
-  }
-}
