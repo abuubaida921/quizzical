@@ -102,7 +102,7 @@ class QuizPlayPage extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Obx(() {
-                  final options = ctrl.options;
+                  final options = ctrl.currentOptions;
                   final selected = ctrl.selectedAnswer.value;
                   final showing = ctrl.showFeedback.value;
                   final correct = ctrl.currentQuestion.correctAnswer;

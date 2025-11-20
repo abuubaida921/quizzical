@@ -11,11 +11,19 @@ class QuizPlayController extends GetxController {
   final RxBool showFeedback = false.obs;
   final RxString selectedAnswer = ''.obs;
   final RxInt score = 0.obs;
+  final RxList<String> currentOptions = <String>[].obs;
 
   // Get questions list from QuizController
   List<QuestionModel> get questions => quizController.questionList ?? [];
 
   QuestionModel get currentQuestion => questions[currentIndex.value];
+
+  @override
+  void onInit() {
+    super.onInit();
+    _loadOptionsForCurrentQuestion();
+  }
+
 
   // Shuffled options (auto handles boolean/multiple)
   List<String> get options {
@@ -50,17 +58,28 @@ class QuizPlayController extends GetxController {
 
     if (currentIndex.value < questions.length - 1) {
       currentIndex.value++;
-      selectedAnswer.value = "";
       showFeedback.value = false;
+      selectedAnswer.value = "";
+      _loadOptionsForCurrentQuestion();  // ← FIX
     } else {
-      print('result page');
-      // Get.offNamed(AppPages.quizResultPage, arguments: {
-      //   "score": score.value,
-      //   "total": questions.length,
-      // });
+      // go to results
     }
   }
 
+
   String get progressText =>
       "${currentIndex.value + 1}/${questions.length}";
+
+  void _loadOptionsForCurrentQuestion() {
+    final q = currentQuestion;
+
+    if (q.type == "boolean") {
+      currentOptions.value = ["True", "False"];
+    } else {
+      final list = [...q.incorrectAnswers, q.correctAnswer];
+      list.shuffle();
+      currentOptions.value = list;
+    }
+  }
+
 }
