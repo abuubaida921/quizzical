@@ -7,5 +7,6 @@ class AppConstants {
 
   static const String baseUrl = 'https://opentdb.com';
   static const String categoriesUri = '/api_category.php';
+  static const String quizListUri = '/api.php';
 
 }

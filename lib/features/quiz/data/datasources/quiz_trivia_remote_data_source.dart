@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../../../../core/network/api_client.dart';
-import '../models/quiz_model.dart';
+import '../../domain/models/quiz_model.dart';
 
 class QuizTriviaRemoteDataSource {
   final ApiClient client;

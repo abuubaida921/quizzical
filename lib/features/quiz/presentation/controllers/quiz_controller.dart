@@ -2,8 +2,8 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/features/quiz/data/datasources/quiz_trivia_remote_data_source.dart';
-import 'package:quizzical/features/quiz/data/models/quiz_model.dart';
 import 'package:quizzical/routes/app_pages.dart';
+import '../../domain/models/quiz_model.dart';
 
 class QuizController extends GetxController {
   final QuizTriviaRemoteDataSource remote;
