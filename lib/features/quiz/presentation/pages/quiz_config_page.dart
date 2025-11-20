@@ -23,7 +23,6 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   final RxInt numQuestions = 25.obs;
   final RxString difficulty = 'any'.obs;
   final RxString type = 'any'.obs;
-  final RxBool isLoading = false.obs;
 
   late int categoryId;
   late String categoryName;
@@ -38,74 +37,23 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
   }
 
   Future<void> _startQuiz() async {
-    if (isLoading.value) return;
-    isLoading.value = true;
+    if (controller.isLoading.value) return;
 
     // Show blocking loader
     Get.dialog(
-      const Center(child: CircularProgressIndicator()),
+      const Center(child: CircularProgressIndicator(color: AppColors.textPrimary,)),
       barrierDismissible: false,
     );
 
     try {
-      // await controller.loadQuiz(
-      //   amount: numQuestions.value,
-      //   categoryId: categoryId,
-      //   difficulty: difficulty.value,
-      //   type: type.value,
-      // );
       await controller.loadQuizList(amount: numQuestions.value, categoryId: categoryId);
 
       if (Get.isDialogOpen == true) Get.back();
       Get.offNamed(AppPages.quizPlayPage);
-    } catch (e, st) {
+    } catch (e) {
       if (Get.isDialogOpen == true) Get.back();
-
-      String title = "Error";
-      String message = "Failed to load questions. Try again.";
-
-      final err = controller.error.value;
-      if (err != null && err.isNotEmpty) message = err;
-
-      final msgLower = e.toString().toLowerCase();
-      if (msgLower.contains("response_code")) {
-        final match = RegExp(r'code[:\s]+(\d+)').firstMatch(msgLower);
-        final code = int.tryParse(match?.group(1) ?? "") ?? -1;
-
-        switch (code) {
-          case 1:
-            title = "No Questions";
-            message =
-            "Try fewer questions or change difficulty/type.\nNo questions available.";
-            break;
-          case 2:
-            title = "Invalid Options";
-            message = "Your selected quiz options are invalid.";
-            break;
-          case 3:
-          case 4:
-            title = "Session Error";
-            message = "Trivia session expired. Try again later.";
-            break;
-        }
-      }
-
-      try {
-        final isNoQuestions = title.toLowerCase().contains("no questions");
-        if (isNoQuestions) {
-          ToastUtil.info(context, message, title: title);
-        } else {
-          ToastUtil.error(context, message, title: title);
-        }
-      } catch (_) {
-        Get.snackbar(title, message, snackPosition: SnackPosition.BOTTOM);
-      }
-
-      if (kDebugMode) {
-        print("QuizConfigPage error: $e\n$st");
-      }
     } finally {
-      isLoading.value = false;
+      controller.isLoading.value = false;
     }
   }
 
@@ -257,10 +205,10 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
               height: 52,
               child: Obx(() {
                 return OutlinedButton(
-                  onPressed: isLoading.value ? null : _startQuiz,
+                  onPressed: controller.isLoading.value ? null : _startQuiz,
                   style: OutlinedButton.styleFrom(
                     side: BorderSide(
-                      color: isLoading.value
+                      color: controller.isLoading.value
                           ? Colors.grey.shade400
                           : const Color(0xFF0E5E59),
                       width: 1,
@@ -273,7 +221,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                   child: Text(
                     'START',
                     style: AppTextStyles.sectionTitle.copyWith(
-                      color: isLoading.value
+                      color: controller.isLoading.value
                           ? Colors.grey.shade400
                           : const Color(0xFF0E5E59),
                       fontSize: 22,

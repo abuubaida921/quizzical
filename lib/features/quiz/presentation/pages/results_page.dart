@@ -42,19 +42,19 @@ class _ResultsPageState extends State<ResultsPage>
     super.dispose();
   }
 
-  int _percentage() {
-    final total = max(1, _controller.questions.length);
-    final p = (_controller.score.value / total) * 100;
-    return p.round();
-  }
+  // int _percentage() {
+  //   final total = max(1, _controller.questions.length);
+  //   final p = (_controller.score.value / total) * 100;
+  //   return p.round();
+  // }
 
-  String _headline() {
-    final percent = _percentage();
-    if (percent >= 90) return 'Excellent!';
-    if (percent >= 75) return 'Congratulation';
-    if (percent >= 50) return 'Good Job';
-    return 'Keep Trying';
-  }
+  // String _headline() {
+  //   final percent = _percentage();
+  //   if (percent >= 90) return 'Excellent!';
+  //   if (percent >= 75) return 'Congratulation';
+  //   if (percent >= 50) return 'Good Job';
+  //   return 'Keep Trying';
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _ResultsPageState extends State<ResultsPage>
                 child: Column(
                   children: [
                     Text(
-                      _headline(),
+                      '_headline()',
                       textAlign: TextAlign.center,
                       style: AppTextStyles.heading1.copyWith(color: Colors.black,fontSize: 28),
 
@@ -90,7 +90,7 @@ class _ResultsPageState extends State<ResultsPage>
                     const SizedBox(height: 18),
 
                     // Score pill with double-layer effect
-                    _ScoreBadge(percentage: _percentage()),
+                    // _ScoreBadge(percentage: _percentage()),
                     const SizedBox(height: 18),
 
                     // Supporting text
@@ -116,11 +116,11 @@ class _ResultsPageState extends State<ResultsPage>
                     onPressed: () {
                       // reset quiz state and navigate back to categories
                       try {
-                        _controller.questions.clear();
-                        _controller.currentIndex.value = 0;
-                        _controller.score.value = 0;
-                        _controller.selectedAnswer.value = null;
-                        _controller.showAnswerFeedback.value = false;
+                        // _controller.questions.clear();
+                        // _controller.currentIndex.value = 0;
+                        // _controller.score.value = 0;
+                        // _controller.selectedAnswer.value = null;
+                        // _controller.showAnswerFeedback.value = false;
                       } catch (_) {}
 
                       Get.offAllNamed('/categories');

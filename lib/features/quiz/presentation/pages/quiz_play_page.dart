@@ -4,7 +4,7 @@ import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
-import '../controllers/quiz_controller.dart';
+import '../controllers/quiz_play_controller.dart';
 import '../widgets/exit_quiz_dialogue.dart';
 
 class QuizPlayPage extends StatelessWidget {
@@ -12,15 +12,13 @@ class QuizPlayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final QuizController ctrl = Get.find<QuizController>();
-    final theme = Theme.of(context);
+    final QuizPlayController ctrl = Get.put(QuizPlayController());
 
     return Scaffold(
       backgroundColor: const Color(0xFFF3F3F4),
       body: SafeArea(
         child: Column(
           children: [
-            // Top bar: progress + exit
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
               child: Stack(
@@ -29,72 +27,62 @@ class QuizPlayPage extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     child: InkWell(
                       onTap: () async {
-                        // Show the dialog and handle result
                         final shouldExit = await Get.dialog<bool>(
                           const ExitQuizDialog(),
                           barrierDismissible: false,
                         );
-
                         if (shouldExit == true) {
                           Get.offAllNamed(AppPages.categories);
                         }
                       },
-                      customBorder: const CircleBorder(),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            'EXIT',
-                            style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+                          Text('EXIT',
+                              style: AppTextStyles.bodyLarge.copyWith(
+                                  fontWeight: FontWeight.bold)),
+                          Image.asset(
+                            Assets.assetIcons.logout,
+                            width: 25,
+                            height: 25,
+                            color: Colors.black87,
                           ),
-                          Image.asset(Assets.assetIcons.logout, width: 25, height: 25, color: Colors.black87),
                         ],
                       ),
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Obx(() => Text(
-                        ctrl.progressText,
-                        style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
-                      )),
-                    ],
-                  ),
+                  Center(
+                    child: Obx(() => Text(
+                      ctrl.progressText,
+                      style: AppTextStyles.bodyLarge.copyWith(
+                          fontWeight: FontWeight.bold),
+                    )),
+                  )
                 ],
               ),
             ),
 
             const SizedBox(height: 6),
 
-            // Question card area
+            // --------------------
+            // Question Card
+            // --------------------
             Padding(
-              padding: const EdgeInsets.only(left: 16,right: 16,top: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Obx(() {
                 final q = ctrl.currentQuestion;
-                if (ctrl.isLoading.value) {
-                  return SizedBox(
-                    height: 160,
-                    child: Center(child: CircularProgressIndicator()),
-                  );
-                }
-                if (q == null) {
-                  return SizedBox(
-                    height: 160,
-                    child: Center(
-                        child: Text('No question available',)
-                    ),
-                  );
-                }
-
                 return Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 50),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(18),
                     boxShadow: [
-                      BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 18, offset: const Offset(0, 8))
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.06),
+                          blurRadius: 18,
+                          offset: const Offset(0, 8)),
                     ],
                   ),
                   child: Text(
@@ -107,70 +95,51 @@ class QuizPlayPage extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // Options list
+            // --------------------
+            // Options
+            // --------------------
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Obx(() {
-                  final q = ctrl.currentQuestion;
-                  if (q == null) return const SizedBox.shrink();
-
-                  final options = ctrl.shuffledAnswersForCurrent();
+                  final options = ctrl.options;
                   final selected = ctrl.selectedAnswer.value;
-                  final showingFeedback = ctrl.showAnswerFeedback.value;
+                  final showing = ctrl.showFeedback.value;
+                  final correct = ctrl.currentQuestion.correctAnswer;
 
                   return ListView.separated(
                     itemCount: options.length,
-                    shrinkWrap: true,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
-                    itemBuilder: (context, idx) {
-                      final option = options[idx];
-                      final normalizedOption = option;
-                      final isSelected = selected != null && _normalize(selected) == _normalize(normalizedOption);
-                      final isCorrect = _normalize(option) == _normalize(q.correctAnswer);
+                    itemBuilder: (ctx, i) {
+                      final opt = options[i];
+                      final isSelected = ctrl.normalize(selected) == ctrl.normalize(opt);
+                      final isCorrect = ctrl.normalize(opt) == ctrl.normalize(correct);
 
-                      // Determine colors and icon state
                       Color bg = Colors.white;
-                      Widget trailing = _EmptyRadio(); // hollow circle in mock
+                      Widget indicator = _EmptyRadio();
 
-                      if (showingFeedback) {
+                      if (showing) {
                         if (isCorrect) {
-                          bg = const Color(0xFFBFEFDC); // mint green for correct
-                          trailing = _ResultCircle(
-                            color: const Color(0xFF0E6F66),
-                            icon: Icons.check,
-                            iconColor: Colors.white,
-                          );
+                          bg = const Color(0xFFBFEFDC);
+                          indicator = const _ResultCircle(
+                              color: Color(0xFF0E6F66),
+                              icon: Icons.check,
+                              iconColor: Colors.white);
                         } else if (isSelected && !isCorrect) {
-                          bg = const Color(0xFFF6BFC0); // pale red for incorrect
-                          trailing = _ResultCircle(
-                            color: const Color(0xFFD64555),
-                            icon: Icons.close,
-                            iconColor: Colors.white,
-                          );
-                        } else {
-                          bg = Colors.white;
-                          trailing = _EmptyRadio();
-                        }
-                      } else {
-                        if (isSelected) {
-                          // subtle selected state before feedback
-                          bg = Colors.white;
-                          trailing = _EmptyRadio();
-                        } else {
-                          bg = Colors.white;
-                          trailing = _EmptyRadio();
+                          bg = const Color(0xFFF6BFC0);
+                          indicator = const _ResultCircle(
+                              color: Color(0xFFD64555),
+                              icon: Icons.close,
+                              iconColor: Colors.white);
                         }
                       }
 
                       return _OptionTile(
-                        text: option,
+                        text: opt,
                         backgroundColor: bg,
-                        trailing: trailing,
+                        trailing: indicator,
                         onTap: () {
-                          if (!showingFeedback) {
-                            ctrl.submitAnswer(option);
-                          }
+                          if (!showing) ctrl.submitAnswer(opt);
                         },
                       );
                     },
@@ -179,48 +148,49 @@ class QuizPlayPage extends StatelessWidget {
               ),
             ),
 
-            // Bottom Next button
+            // --------------------
+            // Bottom Next Button
+            // --------------------
             Padding(
               padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
               child: SizedBox(
                 height: 55,
                 width: double.infinity,
                 child: Obx(() {
-                  final showingFeedback = ctrl.showAnswerFeedback.value;
-                  // If no selection yet, keep Next disabled (encourage answer selection)
-                  final hasSelected = ctrl.selectedAnswer.value != null || showingFeedback;
+                  final canTap =
+                      ctrl.selectedAnswer.value.isNotEmpty ||
+                          ctrl.showFeedback.value;
+
                   return ElevatedButton(
-                    onPressed: hasSelected ? () => ctrl.nextQuestion() : null,
+                    onPressed: canTap ? ctrl.next : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0E5E59),
                       disabledBackgroundColor: Colors.grey.shade400,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18)),
                     ),
                     child: Text(
-                      'Next',
+                      "Next",
                       style: AppTextStyles.button.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22
-                      ),
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22),
                     ),
                   );
                 }),
               ),
-            ),
+            )
           ],
         ),
       ),
     );
   }
-
-  // Local normalizer (same logic used in the controller) to compare strings consistently.
-  String _normalize(String s) {
-    return s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-  }
 }
 
-/// Option tile - rounded white card with text and trailing widget (radio/check/etc).
+// ----------------------------
+// UI Widgets
+// ----------------------------
+
 class _OptionTile extends StatelessWidget {
   final String text;
   final VoidCallback onTap;
@@ -228,24 +198,26 @@ class _OptionTile extends StatelessWidget {
   final Widget trailing;
 
   const _OptionTile({
-    Key? key,
+    super.key,
     required this.text,
     required this.onTap,
     required this.backgroundColor,
     required this.trailing,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
-      duration: const Duration(milliseconds: 220),
-      curve: Curves.easeOut,
+      duration: const Duration(milliseconds: 200),
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 6))
+          BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 6)),
         ],
       ),
       child: InkWell(
@@ -258,10 +230,11 @@ class _OptionTile extends StatelessWidget {
               Expanded(
                 child: Text(
                   text,
-                  style: AppTextStyles.heading3.copyWith(color: Colors.black,fontSize: 15),
+                  style: AppTextStyles.heading3.copyWith(
+                      color: Colors.black, fontSize: 15),
                 ),
               ),
-              trailing,
+              trailing
             ],
           ),
         ),
@@ -270,8 +243,9 @@ class _OptionTile extends StatelessWidget {
   }
 }
 
-/// Hollow radio circle (when no feedback shown)
 class _EmptyRadio extends StatelessWidget {
+  const _EmptyRadio();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -286,13 +260,16 @@ class _EmptyRadio extends StatelessWidget {
   }
 }
 
-/// Small circular result indicator with icon (used for correct/incorrect)
 class _ResultCircle extends StatelessWidget {
   final Color color;
   final IconData icon;
   final Color iconColor;
 
-  const _ResultCircle({required this.color, required this.icon, required this.iconColor});
+  const _ResultCircle({
+    required this.color,
+    required this.icon,
+    required this.iconColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -303,7 +280,6 @@ class _ResultCircle extends StatelessWidget {
       decoration: BoxDecoration(
         color: color,
         shape: BoxShape.circle,
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 8, offset: const Offset(0, 4))],
       ),
       child: Icon(icon, size: 18, color: iconColor),
     );
