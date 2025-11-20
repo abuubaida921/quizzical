@@ -4,25 +4,25 @@ A clean, modular, and scalable **Flutter-based Quiz Application** built using Cl
 
 ## 🚀 Features
 
--   Category-wise quiz selection\
--   Dynamic quiz configuration\
--   Interactive quiz play screen\
--   Progress tracking\
--   Score calculation\
--   Beautiful results page\
--   Clean Architecture (Domain → Data → Presentation)\
--   GetX for routing, DI, bindings & controllers\
--   Multi-environment support\
--   Reusable UI components\
+-   Category-wise quiz selection
+-   Dynamic quiz configuration
+-   Interactive quiz play screen
+-   Progress tracking
+-   Score calculation
+-   Beautiful results page
+-   Clean Architecture (Domain → Data → Presentation)
+-   GetX for routing, DI, bindings & controllers
+-   Multi-environment support
+-   Reusable UI components
 -   Base64 Encoding/Decoding for questions & answers
 -   API-ready architecture (DIO)
 
 ## 📌 Tech Stack
 
--   **Flutter:** 3.38.1\
--   **Dart:** 3.10.0\
--   **State Management:** GetX\
--   **Networking:** Dio\
+-   **Flutter:** 3.38.1
+-   **Dart:** 3.10.0
+-   **State Management:** GetX
+-   **Networking:** Dio
 -   **Architecture:** Clean Architecture + Feature-first
 
 ## 🏗 Project Folder Structure
