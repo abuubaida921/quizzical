@@ -42,12 +42,13 @@ class ResultsPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 20),
 
                   Center(
-                    child: Image.asset(Assets.assetIcons.celebrate,width: 350,),
+                    child: Image.asset(Assets.assetIcons.celebrate,width: 300,),
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 50),
 
                   Text(
                     title,
@@ -62,7 +63,7 @@ class ResultsPage extends StatelessWidget {
 
                   ScoreBadge(percentage: percent),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 50),
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 18),
