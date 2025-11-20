@@ -43,7 +43,7 @@ class _CategoryPageState extends State<CategoryPage> {
             Padding(
               padding: const EdgeInsets.only(bottom: 12, left: 2),
               child: Text(
-                'choose a category to focus on:',
+                AppConstants.appNameSubTitle,
                 style: AppTextStyles.heading1SubTitle,
               ),
             ),
@@ -77,7 +77,7 @@ class _CategoryPageState extends State<CategoryPage> {
                     crossAxisCount: crossAxis,
                     crossAxisSpacing: 14,
                     mainAxisSpacing: 14,
-                    childAspectRatio: 3 / 4,
+                    childAspectRatio: 4 / 5,
                   ),
                   itemBuilder: (context, index) {
                     final cat = categories[index];

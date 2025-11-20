@@ -29,12 +29,6 @@ class CategoryController extends GetxController {
     isLoading.value=false;
   }
 
-  void changeSelectedIndex(int selectedIndex) {
-    categorySelectedIndex.value = selectedIndex;
-  }
-
-  /// Called when the user taps a category card.
-  /// Navigates to the quiz configuration page and passes category id & name as arguments.
   void selectCategory(CategoryModel category) {
     Get.toNamed(AppPages.quizConfigPage, arguments: {
       'categoryId': category.id,

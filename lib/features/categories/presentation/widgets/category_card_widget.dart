@@ -10,7 +10,7 @@ class CategoryCardWidget extends StatelessWidget {
   final int index;
   final VoidCallback onTap;
 
-  const CategoryCardWidget({
+  const CategoryCardWidget({super.key,
     required this.category,
     required this.index,
     required this.onTap,
@@ -27,9 +27,9 @@ class CategoryCardWidget extends StatelessWidget {
 
     return Material(
       color: bg,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(10),
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(12),
