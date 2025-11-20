@@ -7,7 +7,6 @@ import 'package:quizzical/core/utils/loader_util.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
 import '../controllers/quiz_controller.dart';
-import '../../../../routes/app_pages.dart';
 import '../widgets/dropdown_item_widget.dart';
 
 class QuizConfigPage extends StatefulWidget {
@@ -48,9 +47,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
     try {
       await controller.loadQuizList(amount: numQuestions.value, categoryId: categoryId);
-
       if (Get.isDialogOpen == true) Get.back();
-      Get.offNamed(AppPages.quizPlayPage);
     } catch (e) {
       if (Get.isDialogOpen == true) Get.back();
     } finally {
