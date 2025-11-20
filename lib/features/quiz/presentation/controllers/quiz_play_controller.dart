@@ -62,7 +62,10 @@ class QuizPlayController extends GetxController {
       selectedAnswer.value = "";
       _loadOptionsForCurrentQuestion();  // ← FIX
     } else {
-      // go to results
+      Get.offNamed(AppPages.resultsPage, arguments: {
+        "score": score.value,
+        "total": questions.length,
+      });
     }
   }
 

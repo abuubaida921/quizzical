@@ -1,64 +1,34 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:quizzical/core/theme/app_colors.dart';
-
 import '../../../../core/constants/assets.dart';
 import '../../../../core/theme/app_text_style.dart';
-import '../controllers/quiz_controller.dart';
 
-class ResultsPage extends StatefulWidget {
+class ResultsPage extends StatelessWidget {
   const ResultsPage({super.key});
 
-  @override
-  State<ResultsPage> createState() => _ResultsPageState();
-}
-
-class _ResultsPageState extends State<ResultsPage>
-    with SingleTickerProviderStateMixin {
-  late final QuizController _controller;
-  late final AnimationController _animController;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = Get.find<QuizController>();
-
-    _animController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-
-    // small stagger: play confetti animation when page opens
-    Future.delayed(const Duration(milliseconds: 120), () {
-      if (mounted) _animController.forward();
-    });
+  int _percentage(int score, int total) {
+    final t = max(1, total);
+    final p = (score / t) * 100;
+    return p.round();
   }
 
-  @override
-  void dispose() {
-    _animController.dispose();
-    super.dispose();
+  String _headline(int percent) {
+    if (percent >= 90) return "Excellent!";
+    if (percent >= 75) return "Congratulation";
+    if (percent >= 50) return "Good Job!";
+    return "Keep Trying!";
   }
-
-  // int _percentage() {
-  //   final total = max(1, _controller.questions.length);
-  //   final p = (_controller.score.value / total) * 100;
-  //   return p.round();
-  // }
-
-  // String _headline() {
-  //   final percent = _percentage();
-  //   if (percent >= 90) return 'Excellent!';
-  //   if (percent >= 75) return 'Congratulation';
-  //   if (percent >= 50) return 'Good Job';
-  //   return 'Keep Trying';
-  // }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final args = Get.arguments;
+    final int score = args["score"] ?? 0;
+    final int total = args["total"] ?? 1;
+
+    final percent = _percentage(score, total);
+    final title = _headline(percent);
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -66,81 +36,73 @@ class _ResultsPageState extends State<ResultsPage>
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 22),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 18),
 
               Expanded(
-                flex: 2,
+                flex: 3,
                 child: Center(
                   child: Image.asset(Assets.assetIcons.celebrate,width: 250,),
                 ),
               ),
 
-              // Headline
-              Expanded(
-                flex: 2,
-                child: Column(
-                  children: [
-                    Text(
-                      '_headline()',
-                      textAlign: TextAlign.center,
-                      style: AppTextStyles.heading1.copyWith(color: Colors.black,fontSize: 28),
+              const SizedBox(height: 8),
 
-                    ),
-                    const SizedBox(height: 18),
-
-                    // Score pill with double-layer effect
-                    // _ScoreBadge(percentage: _percentage()),
-                    const SizedBox(height: 18),
-
-                    // Supporting text
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        "You've got a great foundation. Ready to try a different category?",
-                        textAlign: TextAlign.center,
-                          style: AppTextStyles.heading3.copyWith(color: Colors.black)
-                      ),
-                    ),
-                  ],
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: AppTextStyles.heading1.copyWith(
+                  color: Colors.black,
+                  fontSize: 30,
                 ),
               ),
 
-              // Bottom button
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 18, 0, 20),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 55,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // reset quiz state and navigate back to categories
-                      try {
-                        // _controller.questions.clear();
-                        // _controller.currentIndex.value = 0;
-                        // _controller.score.value = 0;
-                        // _controller.selectedAnswer.value = null;
-                        // _controller.showAnswerFeedback.value = false;
-                      } catch (_) {}
+              const SizedBox(height: 14),
 
-                      Get.offAllNamed('/categories');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF066A66), // teal-ish
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                      elevation: 6,
-                      shadowColor: Colors.black.withOpacity(0.18),
-                    ),
-                    child: Text('PLAY AGAIN', style: AppTextStyles.button.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22
-                    ),),
+              _ScoreBadge(percentage: percent),
+
+              const SizedBox(height: 20),
+
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                child: Text(
+                  "You've got a great foundation. Ready to try a different category?",
+                  textAlign: TextAlign.center,
+                  style: AppTextStyles.heading3.copyWith(
+                    color: Colors.black,
+                    fontSize: 15,
                   ),
                 ),
               ),
+
+              const SizedBox(height: 30),
+
+              SizedBox(
+                height: 55,
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Get.offAllNamed('/categories');
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF066A66),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    elevation: 5,
+                  ),
+                  child: Text(
+                    'PLAY AGAIN',
+                    style: AppTextStyles.button.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 22,
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
             ],
           ),
         ),
@@ -155,36 +117,20 @@ class _ScoreBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: AppColors.resultScoreOuterColor.withAlpha(47),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.04),
-            blurRadius: 10,
-            offset: const Offset(0, 6),
-          ),
-        ],
+        color: AppColors.resultScoreOuterColor.withOpacity(0.2),
+        borderRadius: BorderRadius.circular(22),
       ),
       child: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.resultScoreOuterColor,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          borderRadius: BorderRadius.circular(22),
         ),
         child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 20),
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 26),
           decoration: BoxDecoration(
             color: AppColors.resultScoreInnerColor,
             borderRadius: BorderRadius.circular(16),
@@ -192,7 +138,11 @@ class _ScoreBadge extends StatelessWidget {
           child: Center(
             child: Text(
               '$percentage%',
-                style: AppTextStyles.heading1.copyWith(color: AppColors.categoryTitlePrimary)
+              style: AppTextStyles.heading1.copyWith(
+                color: AppColors.categoryTitlePrimary,
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ),
