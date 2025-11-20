@@ -7,6 +7,7 @@ import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/assets.dart';
 import '../controllers/quiz_controller.dart';
 import '../../../../routes/app_pages.dart';
+import '../widgets/dropdown_item_widget.dart';
 
 class QuizConfigPage extends StatefulWidget {
   const QuizConfigPage({super.key});
@@ -40,7 +41,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
 
     // Show blocking loader
     Get.dialog(
-      const Center(child: CircularProgressIndicator(color: AppColors.textPrimary,)),
+      const Center(child: CircularProgressIndicator(color: AppColors.nextBtnBgColor,)),
       barrierDismissible: false,
     );
 
@@ -159,10 +160,10 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                             value: difficulty.value,
                             isExpanded: true,
                             items: [
-                              _item("any", "Any Difficulty"),
-                              _item("easy", "Easy"),
-                              _item("medium", "Medium"),
-                              _item("hard", "Hard"),
+                              dropDownItemWidget("any", "Any Difficulty"),
+                              dropDownItemWidget("easy", "Easy"),
+                              dropDownItemWidget("medium", "Medium"),
+                              dropDownItemWidget("hard", "Hard"),
                             ],
                             onChanged: (v) => difficulty.value = v ?? 'any',
                           ),
@@ -188,9 +189,9 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                             value: type.value,
                             isExpanded: true,
                             items: [
-                              _item("any", "Any Type"),
-                              _item("multiple", "Multiple Choice"),
-                              _item("boolean", "True / False"),
+                              dropDownItemWidget("any", "Any Type"),
+                              dropDownItemWidget("multiple", "Multiple Choice"),
+                              dropDownItemWidget("boolean", "True / False"),
                             ],
                             onChanged: (v) => type.value = v ?? 'any',
                           ),
@@ -215,7 +216,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                     side: BorderSide(
                       color: controller.isLoading.value
                           ? Colors.grey.shade400
-                          : const Color(0xFF0E5E59),
+                          : AppColors.nextBtnBgColor,
                       width: 1,
                     ),
                     shape: RoundedRectangleBorder(
@@ -228,7 +229,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
                     style: AppTextStyles.sectionTitle.copyWith(
                       color: controller.isLoading.value
                           ? Colors.grey.shade400
-                          : const Color(0xFF0E5E59),
+                          : AppColors.nextBtnBgColor,
                       fontSize: 22,
                     ),
                   ),
@@ -253,13 +254,6 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
           ],
         ),
       ),
-    );
-  }
-
-  DropdownMenuItem<String> _item(String value, String label) {
-    return DropdownMenuItem(
-      value: value,
-      child: Text(label, style: AppTextStyles.bodySmall),
     );
   }
 }
