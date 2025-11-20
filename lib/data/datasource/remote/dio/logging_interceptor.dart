@@ -26,12 +26,12 @@ class LoggingInterceptor extends InterceptorsWrapper {
           endingIndex = responseAsString.length;
         }
         if (kDebugMode) {
-          // print(responseAsString.substring(i * maxCharactersPerLine, endingIndex));
+          print(responseAsString.substring(i * maxCharactersPerLine, endingIndex));
         }
       }
     } else {
       if (kDebugMode) {
-        //  print(response.data);
+         print(response.data);
       }
     }
 
