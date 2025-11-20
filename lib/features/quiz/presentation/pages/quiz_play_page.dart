@@ -199,7 +199,6 @@ class _OptionTile extends StatelessWidget {
   final Widget trailing;
 
   const _OptionTile({
-    super.key,
     required this.text,
     required this.onTap,
     required this.backgroundColor,

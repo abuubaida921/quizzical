@@ -1,4 +1,3 @@
-import 'package:quizzical/features/categories/domain/repositories/category_repository_interface.dart';
 import 'package:quizzical/features/quiz/domain/repositories/quiz_repository_interface.dart';
 
 import '../../../../core/constants/app_constants.dart';
