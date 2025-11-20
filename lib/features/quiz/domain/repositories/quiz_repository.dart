@@ -23,6 +23,10 @@ class QuizRepository implements QuizRepositoryInterface{
         if (difficulty != null) 'difficulty': difficulty,
         if (type != null) 'type': type,
       };
+      final uri = Uri.parse(AppConstants.quizListUri)
+          .replace(queryParameters: queryParams);
+
+      print("👉 FULL URL: $uri");
 
       final response = await dioClient!.get(
         AppConstants.quizListUri,

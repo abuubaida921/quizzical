@@ -46,7 +46,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
     );
 
     try {
-      await controller.loadQuizList(amount: numQuestions.value, categoryId: categoryId);
+      await controller.loadQuizList(amount: numQuestions.value, categoryId: categoryId,difficulty: difficulty.value,type: type.value);
       if (Get.isDialogOpen == true) Get.back();
     } catch (e) {
       if (Get.isDialogOpen == true) Get.back();
@@ -235,7 +235,7 @@ class _QuizConfigPageState extends State<QuizConfigPage> {
               }),
             ),
 
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
 
             // Footer
             Row(
