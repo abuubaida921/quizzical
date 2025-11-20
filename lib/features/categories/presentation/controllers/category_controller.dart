@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:quizzical/routes/app_pages.dart';
 import '../../../../core/helper/api_checker.dart';
 import '../../../../data/datasource/model/api_response.dart';
-import '../../data/models/category_model.dart';
+import '../../domain/models/category_model.dart';
 import '../../domain/services/category_service_interface.dart';
 
 class CategoryController extends GetxController {
