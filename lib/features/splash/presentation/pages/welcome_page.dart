@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quizzical/core/constants/app_constants.dart';
 import 'package:quizzical/core/theme/app_text_style.dart';
+import '../../../../routes/app_pages.dart';
 import '../../../../shared/widgets/primary_button_widget.dart';
 import '../widgets/illustration_widget.dart';
+import 'package:get/get.dart';
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -31,7 +33,10 @@ class WelcomePage extends StatelessWidget {
                 style: AppTextStyles.appTitle,
               ),
               Spacer(),
-              PrimaryButtonWidget(),
+              PrimaryButtonWidget(
+                title: "GET STARTED",
+                onPressed: () => Get.offAllNamed(AppPages.categories),
+              )
             ],
           );
         }),

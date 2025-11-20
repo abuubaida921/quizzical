@@ -5,6 +5,7 @@ import 'package:quizzical/core/theme/app_text_style.dart';
 import 'package:quizzical/routes/app_pages.dart';
 
 import '../../../../core/constants/assets.dart';
+import '../../../../shared/widgets/primary_button_widget.dart';
 import '../controllers/quiz_play_controller.dart';
 import '../widgets/exit_quiz_dialogue.dart';
 
@@ -152,35 +153,16 @@ class QuizPlayPage extends StatelessWidget {
             // --------------------
             // Bottom Next Button
             // --------------------
-            Padding(
-              padding: const EdgeInsets.fromLTRB(18, 10, 18, 20),
-              child: SizedBox(
+            Obx(() {
+              final canTap = ctrl.selectedAnswer.value.isNotEmpty;
+              return PrimaryButtonWidget(
+                title: "Next",
+                onPressed: canTap ? ctrl.next : null,
+                isEnabled: canTap,
                 height: 55,
-                width: double.infinity,
-                child: Obx(() {
-                  final canTap =
-                      ctrl.selectedAnswer.value.isNotEmpty ||
-                          ctrl.showFeedback.value;
+              );
+            })
 
-                  return ElevatedButton(
-                    onPressed: canTap ? ctrl.next : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.nextBtnBgColor,
-                      disabledBackgroundColor: Colors.grey.shade400,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18)),
-                    ),
-                    child: Text(
-                      "Next",
-                      style: AppTextStyles.button.copyWith(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22),
-                    ),
-                  );
-                }),
-              ),
-            )
           ],
         ),
       ),
